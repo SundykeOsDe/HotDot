@@ -1,0 +1,3621 @@
+var $jscomp = $jscomp || {}; $jscomp.scope = {}; $jscomp.createTemplateTagFirstArg = function(z) {
+
+   return z.raw = z
+}
+
+$jscomp.createTemplateTagFirstArgWithRaw = function(z, S) {
+
+   z.raw = S;
+   return z
+}
+
+$jscomp.arrayIteratorImpl = function(z) {
+
+   var S = 0;
+   return function() {
+       return S < z.length ? {
+           done: !1,
+           value: z[S++]
+       } : {
+           done: !0
+       }
+   }
+}
+
+$jscomp.arrayIterator = function(z) {
+
+   return {
+       next: $jscomp.arrayIteratorImpl(z)
+   }
+}
+
+$jscomp.makeIterator = function(z) {
+
+   var S = "undefined" != typeof Symbol && Symbol.iterator && z[Symbol.iterator];
+   if (S)
+       return S.call(z);
+   if ("number" == typeof z.length)
+       return $jscomp.arrayIterator(z);
+   throw Error(String(z) + " is not an iterable or ArrayLike");
+}
+
+$jscomp.arrayFromIterator = function(z) {
+
+   for (var S, Ea = []; !(S = z.next()).done; )
+       Ea.push(S.value);
+   return Ea
+}
+
+$jscomp.arrayFromIterable = function(z) {
+
+   return z instanceof Array ? z : $jscomp.arrayFromIterator($jscomp.makeIterator(z))
+}
+
+$jscomp.getRestArguments = function() {
+
+   for (var z = Number(this), S = [], Ea = z; Ea < arguments.length; Ea++)
+       S[Ea - z] = arguments[Ea];
+   return S
+}
+
+(function(z, S, Ea, Ua, oa) {
+
+   function dc(q, y, B) {
+       $.ajax({
+           url: "/ajax_get_img_data",
+           data: {
+               url: q
+           },
+           success: function(C) {
+               C.error ? (loading(!1),
+               error_dialog(C.error)) : y(C.img_data, B)
+           }
+       })
+   }
+   function Lb(q, y) {
+       "toBlob"in q && z.URL && URL.createObjectURL ? q.toBlob(function(B) {
+           y.src = URL.createObjectURL(B)
+       }) : y.src = q.toDataURL("image/png")
+   }
+   function jb(q, y, B, C, Y) {
+       function ma() {
+           O.hide();
+           $(S).off("click", ma);
+           if (rb && y !== rb)
+               a: {
+                   for (var A = y, H = A.toUpperCase(), T = 0; T < B.length; T++)
+                       if (B[T].toUpperCase() === H)
+                           break a;
+                   if (wb()) {
+                       H = (H = localStorage.getItem("colors_used")) ? JSON.parse(H) : {};
+                       H[A] = H[A] || {
+                           name: A
+                       };
+                       H[A].last_used = Date.now();
+                       H = JSON.stringify(H);
+                       try {
+                           localStorage.setItem("colors_used", H)
+                       } catch (Ia) {}
+                   }
+               }
+       }
+       function ja(A) {
+           A = fa(A, 1, 1);
+           O.find(".color-slider-2d-wrap").css("background", "rgb(" + A.r + "," + A.g + "," + A.b + ")")
+       }
+       function ra(A, H, T) {
+           A = fa(A, H, T);
+           return "#" + (16 > A.r ? "0" : "") + A.r.toString(16) + (16 > A.g ? "0" : "") + A.g.toString(16) + (16 > A.b ? "0" : "") + A.b.toString(16)
+       }
+       function fa(A, H, T) {
+           var Ia = Math.floor(6 * A)
+             , Ka = 6 * A - Ia;
+           A = T * (1 - H);
+           var ab = T * (1 - Ka * H);
+           H = T * (1 - (1 - Ka) * H);
+           switch (Ia % 6) {
+           case 0:
+               var La = T;
+               var Va = H;
+               var Wa = A;
+               break;
+           case 1:
+               La = ab;
+               Va = T;
+               Wa = A;
+               break;
+           case 2:
+               La = A;
+               Va = T;
+               Wa = H;
+               break;
+           case 3:
+               La = A;
+               Va = ab;
+               Wa = T;
+               break;
+           case 4:
+               La = H;
+               Va = A;
+               Wa = T;
+               break;
+           case 5:
+               La = T,
+               Va = A,
+               Wa = ab
+           }
+           return {
+               r: Math.round(255 * La),
+               g: Math.round(255 * Va),
+               b: Math.round(255 * Wa)
+           }
+       }
+       function na() {
+           if (!wb())
+               return [];
+           var A = localStorage.getItem("colors_used");
+           A = A ? JSON.parse(A) : {};
+           var H = [], T;
+           for (T in A)
+               A.hasOwnProperty(T) && 2592E6 > Date.now() - A[T].last_used && H.push(T);
+           H.sort(function(Ia, Ka) {
+               return A[Ka].last_used - A[Ia].last_used
+           });
+           return H.slice(0, 20 - B.length)
+       }
+       function W() {
+           for (var A = "", H = 0; H < B.length; H++)
+A += '
+
+';
+
+           var T = na();
+           for (H = 0; H < T.length; H++)
+A += '
+
+';
+
+           return A
+       }
+       function sa() {
+O || (O = $('
+
+' + W() + '
+<input class="color-input" type="text" maxlength="9" tabindex="-1" value="' + y + '"/>
+'),
+
+           za = O.find(".color-input"),
+           za.change(function() {
+               var A = za.val();
+               Xa(A);
+               ma()
+           }),
+           O.on("click", ".color-box", function() {
+               var A = $(this).data("color");
+               Xa(A);
+               ma()
+           }),
+           O.click(cancelEvent),
+           q.append(O),
+           ec(O.find(".color-slider-2d-wrap"), O.find(".color-slider-2d"), function(A, H) {
+               ka = A;
+               Ba = 1 - H;
+               Xa(ra(Ma, ka, Ba))
+           }),
+           ec(O.find(".color-slider-wrap"), O.find(".color-slider"), function(A, H) {
+               Ma = H;
+               ja(Ma);
+               Xa(ra(Ma, ka, Ba))
+           }),
+           ja(0))
+       }
+       var O, za, Ma = 0, ka = 1, Ba = 1, rb;
+       this.getColor = function() {
+           return y
+       }
+       ;
+       var Xa = this.setColor = function(A) {
+           y = A;
+           za && za.val(A);
+           xb.css("background", A);
+           C(A)
+       }
+       ;
+var xb = $('
+
+');
+
+       q.addClass("color-picker").append(xb).data("picker", this).click(function(A) {
+           cancelEvent(A);
+           sa();
+           if ("none" === O.css("display")) {
+               O.find(".color-boxes").html(W());
+               A = O.width();
+               var H = q.offset()
+                 , T = H.left + q.width();
+               H = Ea.width() - H.left;
+               var Ia = Math.max(T, H)
+                 , Ka = 0;
+               Ia < A + 10 && (Ka = -(A - Ia) - 10);
+               O.css(H > T ? "left" : "right", Ka);
+               O.show();
+               Ua.click(ma);
+               rb = y
+           } else
+               ma()
+       })
+   }
+   function ec(q, y, B) {
+       function C() {
+           Ua.off("vmouseup", C).off("vmousemove", Y)
+       }
+       function Y(ka) {
+           ma(sa + (ka.pageX - za), O + (ka.pageY - Ma));
+           B && B(na / ja, W / ra);
+           ka.preventDefault()
+       }
+       function ma(ka, Ba) {
+           na = 0 > ka ? 0 : ka > ja - 1 ? ja : ka;
+           W = 0 > Ba ? 0 : Ba > ra - 1 ? ra : Ba;
+           y.css({
+               left: na,
+               top: W
+           })
+       }
+       var ja = q.width(), ra = q.height(), fa = y.offset(), na = fa.left, W = fa.top, sa, O, za, Ma;
+       q.on("vmousedown", function(ka) {
+           za = ka.pageX;
+           Ma = ka.pageY;
+           var Ba = q.offset();
+           ma(za - Ba.left, Ma - Ba.top);
+           sa = na;
+           O = W;
+           B && B(na / ja, W / ra);
+           Ua.on("vmouseup", C).on("vmousemove", Y);
+           ka.preventDefault()
+       })
+   }
+   function wb() {
+       try {
+           var q = z.localStorage;
+           q.setItem("__test__", "__test__");
+           q.removeItem("__test__");
+           return !0
+       } catch (y) {
+           return !1
+       }
+   }
+   function Mb(q, y, B, C, Y) {
+       if (!(Nb || Ra && Ra.el().closest("body")[0])) {
+           Nb = !0;
+           y = y ? 1 : "";
+           C = C || "canvas";
+           var ma = $(".gen-anon").hasClass("checked") && !y ? 1 : ""
+             , ja = $(".gen-private").hasClass("checked") && !y ? 1 : ""
+             , ra = mm.ctx()
+             , fa = mm.canv()
+             , na = mm.getText();
+           signCanvas(ra, fa.width, fa.height, 67600, !0, null, Y);
+           Y = fa.toDataURL("image/jpeg");
+           mm.preview();
+           B && fc(Y, !0, fa.width, fa.height);
+           B = mm.memeData();
+           $.extend(B, {
+               imgData: Y.substr(Y.search(",") + 1),
+               text: na,
+               type: "jpeg",
+               anon: ma,
+               "private": ja,
+               isReply: y,
+               source: C
+           });
+           $.ajax({
+               url: "/ajax_meme_done_canvas",
+               type: "post",
+               data: B,
+               dataType: "json",
+               success: function(W) {
+                   W.error ? (loading(!1),
+                   error_dialog(W.error),
+                   Ra && Ra.hide()) : q(W, ja)
+               },
+               error: function() {
+                   handleRequestError();
+                   Ra && Ra.hide()
+               },
+               complete: function() {
+                   Nb = !1
+               }
+           })
+       }
+   }
+   function Lc(q, y) {
+       gc(q, y, "meme", function() {
+           mm.reset();
+           Ra.hide();
+           hc()
+       }, mm.currentMeme().name || "Untitled")
+   }
+   function hc() {
+       var q = $(".head");
+       q.find(".ad")[0] && z.deployads && (deployads.push(function() {
+           deployads.gpt.pubadsRefresh()
+       }),
+       q = q.position().top,
+       $w.scrollTop() > q && z.scrollTo(0, q))
+   }
+   function fc(q, y, B, C) {
+       z.scrollTo(0, 0);
+       Ra = z.imgDoneBox = new Box({
+html: '
+
+<img id="done-img"' + (q ? ' src="' + q + '"' : "") + '/>
+' + (y ? '
+' : "") + '
+',
+
+           bg: "transparent",
+           top: 20,
+           hideX: !0,
+           noMaskClick: !0
+       })
+   }
+   function gc(q, y, B, C, Y, ma, ja, ra) {
+       var fa = {
+           meme: "jpg",
+           gif: "gif",
+           pie: "png",
+           demotivational: "jpg"
+       }[B]
+         , na = parseInt(q.iid).toString(36)
+         , W = !0
+         , sa = $("#done-img")
+         , O = $("#done-embed-codes");
+       $("#done-img-wrap-wrap").css("width", ja);
+       $("#done-img-wrap").css("padding-bottom", ra / ja * 100 + "%");
+       if (!sa.attr("src"))
+           y || sa.attr("crossorigin", "anonymous"),
+           sa.attr("src", (y ? I.user.id ? "/i-view/" : "//i2.imgflip.com/" : IMAGE_DOMAIN) + na + "." + fa);
+       else if (!y) {
+           var za = new Image;
+           $(za).load(function() {
+               sa.attr("src", $(this).attr("src"))
+           });
+           za.src = IMAGE_DOMAIN + na + "." + fa
+       }
+       Ua.on("contextmenu", "#done-img", function() {
+           W = !1
+       });
+       O.html(embedCodes(na, fa, y, !y && "gif" !== B, B, q.has_gif_video, ja, ra)).find(".img-code").click(function() {
+           $(this).select();
+           W = !1
+       }).on("focus", function() {
+           W = !1
+       });
+y || I.user.id ? y || (B = '
+
+',
+       B = (ja = GET().stream) ? B + ('<button type="button" id="done-submit" class="b but">Post to ' + esc(ja) + " stream</button>") : B + '<button type="button" id="done-submit" class="a">Post to an Imgflip stream</button>',
+O.after(B + "
+"),
+
+       $("#done-submit").click(function() {
+           W = !1;
+           submitImg(q.iid)
+})) : (B = '
+
+You are not logged in! If you want to claim or delete this image, <a class="done-link" target="_blank" href="/login?claim_iid=' + (q.iid + '">Login and claim it</a>'),
+       B += ' or <a class="done-link" target="_blank" href="/signup?claim_iid=' + q.iid + '">Signup and claim it</a>',
+O.after(B + "
+"));
+
+       B = $('<button type="button" class="l but">' + z.BACK_SVG + "Edit</button>").click(function() {
+           W && $.ajax({
+               url: "/ajax_delete_creation",
+               type: "post",
+               data: {
+                   iid: q.iid
+               }
+           });
+           Ra.hide();
+           hc();
+           ma && ma()
+       });
+       C = $('<button type="button" class="l but">New' + z.NEXT_SVG + "</button>").click(C);
+       O = $("#done-btns");
+       O.html(B);
+       if (!y || I.user.id)
+           B = $("<a class='l but' href='" + ((y ? "/i-page/" : "gif" === fa ? "/gif/" : "/i/") + na) + "'>Image page</a>"),
+           B.click(function() {
+               W = !1
+           }),
+           O.append(B);
+       if (y)
+           y = "This image is private. It will only be stored on imgflip servers long enough for you to download it.",
+           I.user.id && (y = 'This image is private. Only you can view or download it. View or delete it from <a href="/creations">My Images</a>.'),
+$("#done-msgs").append('
+
+' + y + "
+");
+
+       else
+           $("#done-share").html(getShareButtonsHtml(na, fa, Y, !0)).on("click", ".shr-btn,.shr-btn-device", function() {
+               W = !1
+           });
+       O.append(C)
+   }
+   var Mc = z.File && z.FileReader && z.FileList, Ra, Nc = {
+       blank: "Blank Template",
+       ai: "Template from AI"
+   }, ic = "Cartoon;Digital Art;Painting;Pencil Drawing;Minimalism;Pixel Art;Watercolor;Line Art;Retro;Vintage;Psychadelic;Cyberpunk;Grunge;Gothic;Surreal;Abstract;Pop Art".split(";");
+   MemeMaker = function(q, y, B, C) {
+       function Y(a) {
+           ma(a);
+           for (a = 0; a < m.length; a++)
+               m[a].autoResize(J().w, J().h, !1)
+       }
+       function ma(a) {
+           a > Z && (a = Z);
+           var b = J().h / J().w * a;
+           yb && b > yb && (a *= yb / b);
+           Ob = Fa || a;
+           Fa = a;
+           aa = Fa / J().w;
+           Aa.width(Fa)
+       }
+       function ja(a, b) {
+           if (pa && !(1 > Math.abs(pa.width - a) && 1 > Math.abs(pa.height - b)) && (Na && (!Sa || 1 <= Math.abs(Sa.width - a) || 1 <= Math.abs(Sa.height - b)) && (Sa = S.createElement("canvas"),
+           Sa.width = pa.width,
+           Sa.height = pa.height,
+           Sa.getContext("2d").drawImage(pa, 0, 0)),
+           pa.width = a,
+           pa.height = b,
+           Na)) {
+               var d = ha.imageSmoothingQuality;
+               ha.imageSmoothingQuality = "high";
+               ha.drawImage(Sa, 0, 0, Z, Ga);
+               ha.imageSmoothingQuality = d
+           }
+       }
+       function ra() {
+           var a = "Generate meme text with AI.";
+           I.done && (a = proType() ? a + ' PRO' : I.user.id ? a + (' ' + I.user.free_openai_memes_left + "/10 free left this month.") : a + ' 10 free per month. Requires login.');
+           L.find(".mm-ai-info").html(a)
+       }
+       function fa() {
+           return I.done ? I.user.id ? I.user.email_verified || proType() ? !0 : (error_dialog("Your account email must be verified to use AI features. This is to prevent abuse (Imgflip does not send marketing spam). Visit your Imgflip settings to change your email or send another verification email. You can also subscribe to Pro to bypass verification."),
+           !1) : (showLogin("Login is required to use AI features."),
+           !1) : notLoadedError()
+       }
+       function na() {
+           if (fa())
+               if (0 >= I.user.free_openai_memes_left && !proType())
+                   kb("AI Gen", "You have used your 10 free AI generations this month. Upgrade for unlimited access.");
+               else {
+                   var a = mm.memeData(1, 1);
+                   loadingEl(L.find(".mm-ai-generate"), !0);
+                   $.ajax({
+                       url: "/ajax_ai_meme_custom",
+                       type: "post",
+                       dataType: "json",
+                       data: {
+                           subject: L.find(".mm-ai-subject").val(),
+                           num_boxes: a.boxes.length,
+                           template: a.template,
+                           template_url: a.template_url
+                       },
+                       success: function(b) {
+                           if (b.error)
+                               error_dialog(b.error);
+                           else {
+                               for (var d = 0; d < b.texts.length; d++)
+                                   m[d] && m[d].$edit.find(".mm-text").val(b.texts[d]).change();
+                               I.user.free_openai_memes_left--;
+                               ra()
+                           }
+                       },
+                       complete: function() {
+                           loadingEl(L.find(".mm-ai-generate"), !1)
+                       }
+                   })
+               }
+       }
+       function W() {
+           return Math.round(Math.max(50, .1 * (Z || 0)))
+       }
+       function sa(a) {
+           return a.effect_img ? a.effect_img.src : 0 === a.id ? a.img ? a.img.src : "" : a.url_name ? "/s/meme/" + a.url_name + "." + a.file_type : "https:" + IMAGE_DOMAIN + (+a.id).toString(36) + "." + a.file_type + "?a" + Math.round(Date.now() / 1E3 / 3600) + ("imgflip.com" !== z.location.hostname ? "&j" : "")
+       }
+       function O(a, b) {
+           if (jc)
+               return a;
+           500 > a && (b *= 500 / a,
+           a = 500);
+           if (25E4 > a * b) {
+               var d = b / a;
+               a = Math.sqrt(25E4 / d);
+               b = d * a
+           }
+           return Math.min(a, Math.max(500, a / b * 500))
+       }
+       function za() {
+           var a = {};
+           L.find(".mm-effect").each(function() {
+               var e = $(this).find("input").val();
+               0 < e && (a[$(this).data("type")] = +e)
+           });
+           q[ta].effect_img = null;
+           if (Object.keys(a).length) {
+               var b = sa(J())
+                 , d = new Image;
+               "http" === b.substr(0, 4) && d.setAttribute("crossorigin", "anonymous");
+               $(d).load(function() {
+                   var e = S.createElement("canvas")
+                     , f = e.getContext("2d");
+                   e.width = Z;
+                   e.height = Ga;
+                   f.drawImage(d, 0, 0, d.width, d.height, 0, 0, Z, Ga);
+                   var g = f.getImageData(0, 0, Z, Ga)
+                     , h = function(k) {
+                       f.putImageData(k, 0, 0);
+                       var l = new Image;
+                       $(l).load(function() {
+                           q[ta].effects = a;
+                           q[ta].effect_img = l;
+                           D.select(ta, !1)
+                       });
+                       l.src = e.toDataURL("image/png")
+                   };
+                   a.smart_posterize && (g = Ma(f, g, .01 * a.smart_posterize));
+                   a.median_filter && (g = ka(f, g, a.median_filter));
+                   a.blur && (g = rb(f, g, a.blur));
+                   a.sharpen && (g = Ba(f, g, 3, .05 * a.sharpen));
+                   a.grayscale && (g = xb(f, g, .01 * a.grayscale));
+                   a.sepia && (g = A(f, g, .01 * a.sepia));
+                   a.invert && (g = H(f, g, .01 * a.invert));
+                   a.brightness && (g = T(f, g, .01 * a.brightness - 1));
+                   a.jpeg_degrade ? Xa(g, a.jpeg_degrade, oa, function(k) {
+                       a.jpeg_min_quality ? Xa(k, 1, 1 - .01 * a.jpeg_min_quality, h) : h(k)
+                   }) : a.jpeg_min_quality ? Xa(g, 1, 1 - .01 * a.jpeg_min_quality, h) : h(g)
+               });
+               d.src = b
+           } else
+               q[ta].effects = null,
+               D.select(ta, !1)
+       }
+       function Ma(a, b, d) {
+           var e = 255 * d;
+           b = Ba(a, b, 1, 2);
+           d = a.createImageData(b);
+           var f = b.width
+             , g = b.height
+             , h = b.data
+             , k = Array(f * g)
+             , l = 0;
+           b = [];
+           for (var c = 0; c < g; c++)
+               for (var n = 0; n < f; n++) {
+                   var p = c * f + n;
+                   if (!k[p]) {
+                       k[p] = !0;
+                       l++;
+                       for (var t = h[4 * p], E = h[4 * p + 1], M = h[4 * p + 2], P = h[4 * p + 3], Q = [p], r = [p]; r.length; ) {
+                           var v = r.pop();
+                           p = [v - 1, v + 1, v - f, v + f];
+                           for (var u = 0; u < p.length; u++) {
+                               var w = p[u];
+                               if (!(k[w] || 0 > w || w >= f * g)) {
+                                   var F = h[4 * w]
+                                     , X = h[4 * w + 1]
+                                     , V = h[4 * w + 2];
+                                   v = h[4 * w + 3];
+                                   Math.abs(F - t) < e && Math.abs(X - E) < e && Math.abs(V - M) < e && Math.abs(v - P) < e && (Q.push(w),
+                                   r.unshift(w),
+                                   k[w] = !0,
+                                   l++,
+                                   t += (F - t) / Q.length,
+                                   E += (X - E) / Q.length,
+                                   M += (V - M) / Q.length,
+                                   P += (v - P) / Q.length)
+                               }
+                           }
+                       }
+                       t = Math.round(t);
+                       E = Math.round(E);
+                       M = Math.round(M);
+                       P = Math.round(P);
+                       50 > Q.length && b.push([Q, t, E, M, P]);
+                       for (u = 0; u < Q.length; u++)
+                           v = Q[u],
+                           d.data[4 * v] = t,
+                           d.data[4 * v + 1] = E,
+                           d.data[4 * v + 2] = M,
+                           d.data[4 * v + 3] = P
+                   }
+               }
+           for (u = 0; u < b.length; u++) {
+               Q = b[u][0];
+               e = b[u][1];
+               h = b[u][2];
+               k = b[u][3];
+               l = b[u][4];
+               p = [];
+               for (c = 0; c < Q.length; c++)
+                   v = Q[c],
+                   p.push(v - 1, v + 1, v - f, v + f);
+               n = Infinity;
+               for (c = 0; c < p.length; c++)
+                   if (v = p[c],
+                   !(0 > v || v >= f * g) && (F = d.data[4 * v],
+                   X = d.data[4 * v + 1],
+                   V = d.data[4 * v + 2],
+                   v = d.data[4 * v + 3],
+                   t = Math.abs(F - e) + Math.abs(X - h) + Math.abs(V - k) + Math.abs(v - l),
+                   0 < t && t < n)) {
+                       n = t;
+                       var la = [F, X, V, v]
+                   }
+               for (c = 0; c < Q.length; c++)
+                   v = Q[c],
+                   d.data[4 * v] = la[0],
+                   d.data[4 * v + 1] = la[1],
+                   d.data[4 * v + 2] = la[2],
+                   d.data[4 * v + 3] = la[3]
+           }
+           return d = ka(a, d, 2)
+       }
+       function ka(a, b, d) {
+           d = Math.round(d);
+           a = a.createImageData(b);
+           var e = b.width
+             , f = b.height;
+           b = b.data;
+           for (var g = 0; g < e; g++)
+               for (var h = 0; h < f; h++) {
+                   for (var k = Array(103), l = 0, c = g - d; c <= g + d; c++)
+                       for (var n = h - d; n <= h + d; n++)
+                           if (0 <= c && c < e && 0 <= n && n < f) {
+                               var p = [b[n * e * 4 + 4 * c], b[n * e * 4 + 4 * c + 1], b[n * e * 4 + 4 * c + 2], b[n * e * 4 + 4 * c + 3]]
+                                 , t = Math.round((p[0] + p[1] + p[2] + p[3]) / 10);
+                               k[t] = k[t] || [];
+                               k[t].push(p);
+                               l++
+                           }
+                   p = 0;
+                   l = Math.floor(l / 2);
+                   c = 0;
+                   a: for (; c < k.length; c++)
+                       if (k[c])
+                           for (n = 0; n < k[c].length; n++)
+                               if (p++,
+                               p >= l) {
+                                   var E = k[c][n];
+                                   break a
+                               }
+                   a.data[h * e * 4 + 4 * g] = E[0];
+                   a.data[h * e * 4 + 4 * g + 1] = E[1];
+                   a.data[h * e * 4 + 4 * g + 2] = E[2];
+                   a.data[h * e * 4 + 4 * g + 3] = E[3]
+               }
+           return a
+       }
+       function Ba(a, b, d, e) {
+           a = a.createImageData(b);
+           var f = b.width
+             , g = b.height;
+           b = b.data;
+           for (var h = 0; h < f; h++)
+               for (var k = 0; k < g; k++) {
+                   for (var l = b[k * f * 4 + 4 * h], c = b[k * f * 4 + 4 * h + 1], n = b[k * f * 4 + 4 * h + 2], p = b[k * f * 4 + 4 * h + 3], t = 0, E = 0, M = 0, P = 0, Q = 0, r = h - d; r <= h + d; r++)
+                       for (var v = k - d; v <= k + d; v++)
+                           0 <= r && r < f && 0 <= v && v < g && (r !== h || v !== k) && (t += b[v * f * 4 + 4 * r] - l,
+                           E += b[v * f * 4 + 4 * r + 1] - c,
+                           M += b[v * f * 4 + 4 * r + 2] - n,
+                           P += b[v * f * 4 + 4 * r + 3] - p,
+                           Q++);
+                   a.data[k * f * 4 + 4 * h] = Math.min(255, Math.max(0, l - Math.round(t / Q * e)));
+                   a.data[k * f * 4 + 4 * h + 1] = Math.min(255, Math.max(0, c - Math.round(E / Q * e)));
+                   a.data[k * f * 4 + 4 * h + 2] = Math.min(255, Math.max(0, n - Math.round(M / Q * e)));
+                   a.data[k * f * 4 + 4 * h + 3] = Math.min(255, Math.max(0, p - Math.round(P / Q * e)))
+               }
+           return a
+       }
+       function rb(a, b, d) {
+           d = Math.round(d);
+           a = a.createImageData(b);
+           var e = b.width
+             , f = b.height;
+           b = b.data;
+           for (var g = 0; g < e; g++)
+               for (var h = 0; h < f; h++) {
+                   for (var k = 0, l = 0, c = 0, n = 0, p = 0, t = g - d; t <= g + d; t++)
+                       for (var E = h - d; E <= h + d; E++)
+                           0 <= t && t < e && 0 <= E && E < f && (k += b[E * e * 4 + 4 * t],
+                           l += b[E * e * 4 + 4 * t + 1],
+                           c += b[E * e * 4 + 4 * t + 2],
+                           n += b[E * e * 4 + 4 * t + 3],
+                           p++);
+                   a.data[h * e * 4 + 4 * g] = Math.round(k / p);
+                   a.data[h * e * 4 + 4 * g + 1] = Math.round(l / p);
+                   a.data[h * e * 4 + 4 * g + 2] = Math.round(c / p);
+                   a.data[h * e * 4 + 4 * g + 3] = Math.round(n / p)
+               }
+           return a
+       }
+       function Xa(a, b, d, e) {
+           var f = a.width
+             , g = a.height
+             , h = S.createElement("canvas");
+           h.width = f;
+           h.height = g;
+           var k = h.getContext("2d");
+           k.putImageData(a, 0, 0);
+           var l = function() {
+               var c = h.toDataURL("image/jpeg", d !== oa ? d : .5 + .3 * Math.random())
+                 , n = new Image;
+               $(n).load(function() {
+                   k.drawImage(n, 0, 0);
+                   b--;
+                   0 < b ? l() : e(k.getImageData(0, 0, f, g))
+               });
+               n.src = c
+           };
+           l()
+       }
+       function xb(a, b, d) {
+           a = a.createImageData(b);
+           var e = b.width
+             , f = b.height;
+           b = b.data;
+           for (var g = 0; g < e; g++)
+               for (var h = 0; h < f; h++) {
+                   var k = b[h * e * 4 + 4 * g]
+                     , l = b[h * e * 4 + 4 * g + 1]
+                     , c = b[h * e * 4 + 4 * g + 2]
+                     , n = b[h * e * 4 + 4 * g + 3]
+                     , p = Math.round((k + l + c) / 3);
+                   a.data[h * e * 4 + 4 * g] = Math.min(255, Math.max(0, k + (p - k) * d));
+                   a.data[h * e * 4 + 4 * g + 1] = Math.min(255, Math.max(0, l + (p - l) * d));
+                   a.data[h * e * 4 + 4 * g + 2] = Math.min(255, Math.max(0, c + (p - c) * d));
+                   a.data[h * e * 4 + 4 * g + 3] = n
+               }
+           return a
+       }
+       function A(a, b, d) {
+           a = a.createImageData(b);
+           var e = b.width
+             , f = b.height;
+           b = b.data;
+           for (var g = 0; g < e; g++)
+               for (var h = 0; h < f; h++) {
+                   var k = b[h * e * 4 + 4 * g]
+                     , l = b[h * e * 4 + 4 * g + 1]
+                     , c = b[h * e * 4 + 4 * g + 2]
+                     , n = b[h * e * 4 + 4 * g + 3];
+                   a.data[h * e * 4 + 4 * g] = Math.min(255, Math.max(0, k * (1 - .607 * d) + .769 * l * d + .189 * c * d));
+                   a.data[h * e * 4 + 4 * g + 1] = Math.min(255, Math.max(0, .349 * k * d + l * (1 - .314 * d) + .168 * c * d));
+                   a.data[h * e * 4 + 4 * g + 2] = Math.min(255, Math.max(0, .272 * k * d + .534 * l * d + c * (1 - .869 * d)));
+                   a.data[h * e * 4 + 4 * g + 3] = n
+               }
+           return a
+       }
+       function H(a, b, d) {
+           a = a.createImageData(b);
+           var e = b.width
+             , f = b.height;
+           b = b.data;
+           for (var g = 0; g < e; g++)
+               for (var h = 0; h < f; h++) {
+                   var k = b[h * e * 4 + 4 * g]
+                     , l = b[h * e * 4 + 4 * g + 1]
+                     , c = b[h * e * 4 + 4 * g + 2]
+                     , n = b[h * e * 4 + 4 * g + 3]
+                     , p = (255 - l - l) * d
+                     , t = (255 - c - c) * d;
+                   a.data[h * e * 4 + 4 * g] = Math.min(255, Math.max(0, k + (255 - k - k) * d));
+                   a.data[h * e * 4 + 4 * g + 1] = Math.min(255, Math.max(0, l + p));
+                   a.data[h * e * 4 + 4 * g + 2] = Math.min(255, Math.max(0, c + t));
+                   a.data[h * e * 4 + 4 * g + 3] = n
+               }
+           return a
+       }
+       function T(a, b, d) {
+           a = a.createImageData(b);
+           var e = b.width
+             , f = b.height;
+           b = b.data;
+           for (var g = 0; g < e; g++)
+               for (var h = 0; h < f; h++) {
+                   var k = b[h * e * 4 + 4 * g + 1]
+                     , l = b[h * e * 4 + 4 * g + 2]
+                     , c = b[h * e * 4 + 4 * g + 3];
+                   a.data[h * e * 4 + 4 * g] = Math.min(255, Math.max(0, b[h * e * 4 + 4 * g] + 255 * d));
+                   a.data[h * e * 4 + 4 * g + 1] = Math.min(255, Math.max(0, k + 255 * d));
+                   a.data[h * e * 4 + 4 * g + 2] = Math.min(255, Math.max(0, l + 255 * d));
+                   a.data[h * e * 4 + 4 * g + 3] = c
+               }
+           return a
+       }
+       function Ia() {
+           ia = ba.find(".mm-spacing-type").val();
+           Ja = ba.find(".mm-spacing-color").val();
+           ba.find(".mm-spacing-color-picker").toggleClass("display-none", "custom" !== Ja);
+           Ja = "custom" === Ja ? zb : Ja;
+           lb = ba.find(".mm-spacing-size").val();
+           var a = ba.find(".mm-spacing-settings")
+             , b = q.spaced ? q.spaced.w : J().w
+             , d = q.spaced ? q.spaced.h : J().h;
+           if (ia) {
+               a.show();
+               var e = ua !== oa ? ua : ta
+                 , f = q[e]
+                 , g = sa(f)
+                 , h = new Image;
+               "http" === g.substr(0, 4) && h.setAttribute("crossorigin", "anonymous");
+               var k = function() {
+                   var l = S.createElement("canvas")
+                     , c = l.getContext("2d")
+                     , n = g ? h.width : f.w
+                     , p = g ? h.height : f.h
+                     , t = Math.round(lb / 100 * p);
+                   l.width = n;
+                   l.height = p + t * ("top_bottom" === ia ? 2 : 1);
+                   var E = "white" === Ja ? "#fff" : "black" === Ja ? "#000" : Ja;
+                   if ("auto" === Ja) {
+                       c.drawImage(h, 0, 0, n, t, 0, 0, n, t);
+                       E = Ka(c.getImageData(0, 0, n, t));
+                       c.drawImage(h, 0, p - t, n, t, 0, 0, n, t);
+                       var M = Ka(c.getImageData(0, 0, n, t));
+                       if ("top" === ia)
+                           var P = E;
+                       else if ("bottom" === ia)
+                           P = M;
+                       else if ("top_bottom" === ia) {
+                           P = [];
+                           for (var Q = 0; 4 > Q; Q++)
+                               P[Q] = Math.round((E[Q] + M[Q]) / 2)
+                       }
+                       E = "rgba(" + P[0] + "," + P[1] + "," + P[2] + "," + P[3] + ")"
+                   }
+                   P = 0;
+                   if ("top" === ia || "top_bottom" === ia)
+                       P += t,
+                       c.fillStyle = E,
+                       c.fillRect(0, 0, n, t);
+                   g ? c.drawImage(h, 0, P) : c.clearRect(0, P, n, p);
+                   if ("bottom" === ia || "top_bottom" === ia)
+                       c.fillStyle = E,
+                       c.fillRect(0, P + p, n, t);
+                   var r = new Image;
+                   $(r).load(function() {
+                       var v = 0;
+                       q.spaced && "bottom" !== q.spaced.spacing_type && (v -= q.spaced.spacing_height);
+                       "bottom" !== ia && (v += t);
+                       ab(v, r.height, f.h, b, d);
+                       ua = e;
+                       q.spaced = {
+                           id: 0,
+                           templates: f.templates || [{
+                               id: f.id,
+                               url: f.template_url
+                           }],
+                           name: "Spaced Image",
+                           spacing_type: ia,
+                           spacing_height: t,
+                           img: r,
+                           w: r.width,
+                           h: r.height
+                       };
+                       D.select("spaced", !1);
+                       a.find(".mm-toggle-drag").hasClass("checked") || bb(!0);
+                       C.spacingUpdated && C.spacingUpdated("bottom" !== ia ? t : 0, "top" !== ia ? t : 0)
+                   });
+                   Lb(l, r)
+               };
+               g ? ($(h).load(k),
+               h.src = g) : k()
+           } else
+               ua !== oa && ("top" === q.spaced.spacing_type || "top_bottom" === q.spaced.spacing_type ? ab(-q.spaced.spacing_height, q[ua].h, q[ua].h, b, d) : ab(0, q[ua].h, q[ua].h, b, d),
+               D.select(ua, !1, !1),
+               ua = oa),
+               delete q.spaced,
+               a.hide(),
+               C.spacingUpdated && C.spacingUpdated(0, 0)
+       }
+       function Ka(a) {
+           for (var b = a.data, d = 0, e = 0, f = 0, g = 0, h = 0; 100 > h; h++) {
+               var k = Math.random() * a.width >> 0
+                 , l = Math.random() * a.height >> 0;
+               d += b[l * a.width * 4 + 4 * k];
+               e += b[l * a.width * 4 + 4 * k + 1];
+               f += b[l * a.width * 4 + 4 * k + 2];
+               g += b[l * a.width * 4 + 4 * k + 3]
+           }
+           return [Math.round(d / 100), Math.round(e / 100), Math.round(f / 100), Math.round(g / 100)]
+       }
+       function ab(a, b, d, e, f) {
+           for (var g = !1, h = !1, k = 0; k < m.length; k++) {
+               var l = m[k].getVals();
+               !g && ("top" === ia || "top_bottom" === ia) && l.w > .8 * e && l.y < .1 * f ? (l.x = 5,
+               l.y = 5,
+               l.w = e - 10,
+               l.h = lb / 100 * d - 10,
+               g = !0) : !h && ("bottom" === ia || "top_bottom" === ia) && l.w > .8 * e && l.y + l.h > .9 * f ? (l.x = 5,
+               l.y = b - lb / 100 * d + 5,
+               l.w = e - 10,
+               l.h = lb / 100 * d - 5 - 13,
+               h = !0) : (l.y += a,
+               5 > l.y && (l.y = 5),
+               l.y + l.h > b - 13 && (l.y = b - l.h - 13));
+               m[k].setVals(l.x, l.y, l.w, l.h, l.rotation)
+           }
+       }
+       function La() {
+           var a = ~~ba.find(".mm-blank-width").val()
+             , b = ~~ba.find(".mm-blank-height").val();
+           if (20 < a / b || 20 < b / a)
+               error_dialog('Ratio of image dimensions cannot be greater than 20:1. If you are trying to add multiple images in a chain, you can use the "Add Image" button instead.');
+           else {
+               ba.find(".mm-blank-ratio").each(function() {
+                   $(this).toggleClass("selected", .01 > Math.abs($(this).data("w") / $(this).data("h") - a / b))
+               });
+               var d = S.createElement("canvas");
+               d.width = a;
+               d.height = b;
+               var e = new Image;
+               $(e).load(function() {
+                   q.blank = {
+                       id: 0,
+                       name: "Blank Template",
+                       img: e,
+                       w: e.width,
+                       h: e.height,
+                       has_transparency: 1,
+                       template_url: "_blank:" + a + "x" + b
+                   };
+                   D.select("blank", "blank" !== ta);
+                   for (var f = 0; f < m.length; f++)
+                       m[f].constrainVals()
+               });
+               Lb(d, e)
+           }
+       }
+       function Va() {
+           var a = $(this);
+           a = a.data("w") / a.data("h");
+           var b = ~~ba.find(".mm-blank-width").val();
+           ba.find(".mm-blank-height").val(Math.round(b / a));
+           La()
+       }
+       function Wa() {
+           if (!kc() || confirm("Rotating the template will remove the extra text/image boxes that you added. Continue?")) {
+               ia && ba.find(".mm-spacing-type").val("").change();
+               var a = J()
+                 , b = a.w;
+               a.w = a.h;
+               a.h = b;
+               a.rotation = 270 === a.rotation ? 0 : ~~a.rotation + 90;
+               D.select(ta)
+           }
+       }
+       function kc() {
+           var a = J().default_settings ? JSON.parse(J().default_settings).length : 2;
+           return m.length > a ? !0 : !1
+       }
+       function Oc() {
+           for (var a = "", b = $jscomp.makeIterator(ic), d = b.next(); !d.done; d = b.next())
+               d = d.value,
+               a += cb(d, !1, {
+                   className: "mm-ai-img-tag-" + d.replace(" ", "-")
+               });
+b = "pro" === proType() ? icon("check") + "You have unlimited AI templates with Pro" : "pro_basic" === proType() ? icon("check") + "You have 300 AI templates/mo with Pro Basic" : I.user.id ? I.user.email_verified ? I.user.free_ai_imgs_left + '/1 free AI templates left this month.\n\t\t\t\t\tUpgrade' : "To use AI features, verify your email (check your inbox or visit your Settings)" : '
+
+To use AI features, Log in with a verified email
+';
+
+           var e = new Box({
+html: '
+
+\n\t\t\t\t\t
+' + b + '
+\n\t\t\t\t\t
+Describe the template
+\n\t\t\t\t\t<input type="text" class="mm-ai-img-subject" placeholder="Cute kitten sitting on a puppy"/>\n\t\t\t\t\t
+Style tags (optional)
+\n\t\t\t\t\t
+' + a + '
+\n\t\t\t\t\t
+\n\t\t\t\t\t\t<button type="button" class="mm-ai-img-generate-btn b but">AI-Generate</button>\n\t\t\t\t\t
+\n\t\t\t\t\t
+\n\t\t\t\t\t\t
+Choose an image
+\n\t\t\t\t\t\t
+\n\t\t\t\t\t
+\n\t\t\t\t
+',
+
+               noMaskClick: !0
+           })
+             , f = e.el()
+             , g = f.find(".mm-ai-img-generate-btn");
+           g.on("click", function() {
+               if (fa() && !g.hasClass("load-wrap"))
+                   if (0 >= I.user.free_ai_imgs_left && !proType())
+                       kb("AI Img Gen", "You have used your free AI templates for this month. Upgrade to Pro for unlimited access, or Pro Basic for 300 generations per month.");
+                   else {
+                       var h = f.find(".mm-ai-img-subject").val()
+                         , k = ic.filter(function(p) {
+                           return f.find(".mm-ai-img-tag-" + p.replace(" ", "-")).hasClass("checked")
+                       });
+                       if (h || k.length) {
+                           loadingEl(g, !0);
+                           for (var l = [], c = proType() ? 2 : 1, n = 0; n < c; n++)
+                               l.push($.ajax({
+                                   url: "/ajax_ai_img_create",
+                                   type: "post",
+                                   dataType: "json",
+                                   data: {
+                                       subject: h,
+                                       tags: k
+                                   }
+                               }));
+                           $.when.apply($, $jscomp.arrayFromIterable(l)).done(function() {
+                               var p = $jscomp.getRestArguments.apply(0, arguments);
+                               p = 1 === l.length ? [p] : p;
+                               var t = [];
+                               p = $jscomp.makeIterator(p);
+                               for (var E = p.next(); !E.done; E = p.next())
+                                   E = E.value[0],
+                                   E.error ? error_dialog(E.error) : t.push(E.urls[0]);
+                               t = t.map(function(M) {
+                                   return '<img src="' + M + '"/>'
+                               }).join("");
+                               f.find(".mm-ai-img-choices").html(t);
+                               f.find(".mm-ai-img-choices-wrap").removeClass("display-none");
+                               proType() || I.user.free_ai_imgs_left--;
+                               loadingEl(g, !1)
+                           })
+                       } else
+                           MSG("Please enter a subject or select styles", "red")
+                   }
+           });
+           f.on("click", ".mm-ai-img-choices img", function() {
+               var h = $(this).attr("src");
+               e.hide();
+               lc();
+               var k = f.find(".mm-ai-img-subject").val().trim();
+               $("#mm-upload-name").val(k);
+               $("#mm-upload-url").val(h).change()
+           });
+           f.on("click", ".mm-ai-img-upgrade", function() {
+               kb("AI Img Gen", "Upgrade to Pro for unlimited AI templates, or Pro Basic for 300 generations per month")
+           })
+       }
+       function lc() {
+var a = '
+
+Upload image from your device<input id="mm-upload-file" type="file" class="hidden-file-input"/>
+OR
+<input id="mm-upload-url" type="url" placeholder="Paste image or image URL"/>
+<button type="button" class="mm-upload-rotate l but sml">' + ROTATE_SVG + '</button><button type="button" class="mm-upload-flip l but sml">flip</button>
+' + cb("Allow this template to be shared publicly", !1, {
+               id: "mm-upload-public"
+}) + '
+Name <input id="mm-upload-name" type="text" maxlength="64" placeholder="e.g. X All the Y"/>Alternate Names (comma-separated) <input id="mm-upload-alt-names" type="text" maxlength="255" placeholder="e.g. All the Things"/>Description <textarea id="mm-upload-description" maxlength="512" placeholder="e.g. history of the meme and how it should be used"></textarea>' + (I.user.id ? cb("Anonymous (not shown with your username)", !1, {
+               id: "mm-upload-anon"
+}) : "") + '
+<button type="button" id="mm-upload-btn" class="l but">Upload</button>
+';
+
+           Pb = new Box({
+               html: a,
+               w: 360
+           });
+           a = Pb.el();
+           var b = $("#mm-upload-img-preview-wrap");
+           $("#mm-upload-public").change(function() {
+               $("#mm-upload-public-settings").toggle($(this).hasClass("checked"))
+           });
+           $("#mm-upload-btn").on("click", function() {
+               var d = !$("#mm-upload-public").hasClass("checked");
+               Ha ? d ? Ha ? (loading("Uploading image"),
+               Pc(Ha.getFinalDataUrl("image/png"), Ab)) : MSG("No image selected", "red") : (loading("Uploading new template"),
+               $.ajax({
+                   url: "/ajax_upload_template",
+                   type: "post",
+                   dataType: "json",
+                   data: {
+                       img_data: Ha.getFinalDataUrl("image/png"),
+                       template_url: Ab,
+                       template_name: $("#mm-upload-name").val(),
+                       template_alt_names: $("#mm-upload-alt-names").val(),
+                       template_description: $("#mm-upload-description").val(),
+                       template_anon: $("#mm-upload-anon").hasClass("checked") ? 1 : 0
+                   },
+                   success: function(e) {
+                       e.error ? (loading(!1),
+                       error_dialog(e.error)) : z.location = e.url
+                   }
+               })) : MSG("No file or URL selected", "red")
+           });
+           $("#mm-upload-file").change(function() {
+               this.files[0] && mc(b, this.files[0])
+           });
+           $("#mm-upload-url").on("keyup change paste", function(d) {
+               var e = (d.originalEvent || d).clipboardData;
+               if (e && e.items) {
+                   e = e.items;
+                   for (var f = 0; f < e.length; f++)
+                       if (0 === e[f].type.indexOf("image")) {
+                           var g = e[f].getAsFile();
+                           if (g)
+                               return mc(b, g, !0),
+                               cancelEvent(d)
+                       }
+               }
+               Qc($(this), b)
+           });
+           a.on("click", ".mm-upload-rotate", function() {
+               Ha && Ha.rotateClockwise()
+           });
+           a.on("click", ".mm-upload-flip", function() {
+               Ha && Ha.flipHorizontal()
+           })
+       }
+       function mc(a, b, d) {
+           if (0 !== b.type.indexOf("image"))
+               MSG("File is not an image", "red");
+           else {
+               a.show();
+               var e = new FileReader;
+               e.onload = function(f) {
+                   Ha = new ImageCropper(a,a.width(),a.width());
+                   Ha.setSrc(f.target.result, b.name);
+                   $("#mm-upload-btns").removeClass("display-none");
+                   Ab = (d ? "paste:" : "") + b.name
+               }
+               ;
+               e.readAsDataURL(b)
+           }
+       }
+       function Pc(a, b) {
+           var d = new Image;
+           $(d).load(function(e) {
+               q.custom = {
+                   id: 0,
+                   name: "Custom Image",
+                   img: d,
+                   w: d.width,
+                   h: d.height,
+                   template_url: b || ""
+               };
+               D.select("custom");
+               loading(!1)
+           });
+           d.src = a;
+           Pb.hide()
+       }
+       function Bb(a) {
+           if (mb[a] !== oa)
+               return mb[a];
+           if ("fonts"in S && "check"in S.fonts)
+               return mb[a] = S.fonts.check("15px '" + a + "'"),
+               mb[a];
+           nb || (nb = $("<canvas/>")[0].getContext("2d"),
+           nb.font = "72px monospace",
+           nc = nb.measureText("abcdefghijklmnopqrstuvwxyz0123456789\u4f60\u3053\u0645\u0c4b\u0bb5").width);
+           nb.font = "72px '" + a + "', monospace";
+           var b = nb.measureText("abcdefghijklmnopqrstuvwxyz0123456789\u4f60\u3053\u0645\u0c4b\u0bb5").width !== nc;
+           return mb[a] = b
+       }
+       function Rc(a, b) {
+           for (var d = 0; d < a.length; d++)
+               if (a[d].toLowerCase() === b)
+                   return !0;
+           return !1
+       }
+       function Sc(a) {
+var b = '
+
+'
+             , d = Tc();
+           if (d.length) {
+b += '
+Recent Fonts
+';
+               for (var e = 0; e < d.length; e++)
+                   b += sb(d[e].name, d[e].src);
+               Qb(d)
+           }
+b += '
+Web Fonts
+';
+           for (e = 0; e < tb.length; e++)
+               d = tb[e],
+               Bb(d) && (b += sb(d));
+           b = mb[Rb[0]] !== oa ? b + oc() : b + '<button type="button" class="mm-font-show-more l but down-arrow">More fonts on your device</button>';
+           b = Ya.length ? b + Sb() : b + '<button type="button" class="mm-font-show-google l but down-arrow">Google free fonts</button>';
+           var f = new Box({
+               html: b
+           })
+             , g = f.el().find(".mm-font-selector");
+           g.on("click", ".mm-font-item", function() {
+               var h = $(this).data("font")
+                 , k = $(this).data("src");
+               f.hide();
+               a && a(h);
+               a: {
+                   for (var l = h.toUpperCase(), c = 0; c < tb.length; c++)
+                       if (tb[c].toUpperCase() === l)
+                           break a;
+                   if (wb()) {
+                       l = (l = localStorage.getItem("fonts_used")) ? JSON.parse(l) : {};
+                       l[h] = l[h] || {
+                           name: h,
+                           src: k
+                       };
+                       l[h].last_used = Date.now();
+                       l = JSON.stringify(l);
+                       try {
+                           localStorage.setItem("fonts_used", l)
+                       } catch (n) {}
+                   }
+               }
+           });
+           g.on("click", ".mm-font-show-more", function() {
+               $(this).after(oc());
+               $(this).remove()
+           });
+           g.on("click", ".mm-font-add-btn", function() {
+               var h = g.find(".mm-font-add-input")
+                 , k = h.val();
+               if (k) {
+                   for (var l = Tb.concat(Rb).concat(pc), c = 0; c < l.length; c++)
+                       if (k.toLowerCase() === l[c].toLowerCase()) {
+                           error_dialog("This font is already in the list below!");
+                           return
+                       }
+                   Bb(k) ? (Tb.push(k),
+                   $(this).after(sb(k)),
+                   h.val("")) : error_dialog("This font was not detected on your device. Try checking the spelling and ensuring the font is installed on your device.")
+               }
+           });
+           g.on("click", ".mm-font-show-google", function() {
+               var h = $(this)
+, k = $('
+');
+               h.hide().after(k);
+               qc(function() {
+                   k.remove();
+                   h.after(Sb())
+               }, function() {
+                   k.remove();
+                   h.show()
+               })
+           });
+           g.on("click", ".mm-font-item-more-btn", function() {
+               var h = $(this).closest(".mm-font-items").find(".mm-font-item").length;
+               (h = rc(h)) ? $(this).before(h) : $(this).remove()
+           });
+           g.on("change", ".mm-font-latin-only", function() {
+               Ub = $(this).hasClass("checked");
+               $(this).closest(".mm-google-fonts").html(Sb())
+           })
+       }
+       function sb(a, b) {
+           var d = esc(a)
+             , e = "Impact" === a ? "impact,impac" : d;
+return '
+' + d + "
+"
+       }
+       function oc() {
+           for (var a = Tb.concat(Rb).concat(pc), b = {}, d = [], e = 0; e < a.length; e++) {
+               var f = a[e];
+               b[f] || (b[f] = !0,
+               Bb(f) && d.push(f))
+           }
+           if (!d.length)
+               return "";
+a = '
+Other fonts on your device
+Not seeing a font you have? Add it:
+<input class="mm-font-add-input" type="text" placeholder="Font name"/><button type="button" class="mm-font-add-btn l but">Add</button>
+';
+           for (e = 0; e < d.length; e++)
+               a += sb(d[e]);
+return a + "
+"
+       }
+       function Sb() {
+           Qb(Ya);
+var a = '
+Google Free Fonts
+sorted by popularity
+' + cb("Latin Only", Ub, {
+               className: "mm-font-latin-only"
+           });
+a = a + '
+' + rc(0); return a + '
+more
+'
+       }
+       function rc(a) {
+           for (var b = "", d = 0, e = 0, f = 0; f < Ya.length && (Ub && 1E6 < Ya[f].filesize || (d >= a && (b += sb(Ya[f].family, Ya[f].src),
+           e++),
+           d++,
+           !(30 <= e))); f++)
+               ;
+           return b
+       }
+       function qc(a, b) {
+           Cb || (Cb = !0,
+           $.ajax({
+               url: "/ajax_get_google_fonts",
+               dataType: "json",
+               success: function(d) {
+                   Cb = !1;
+                   Ya = d.fonts;
+                   Qb(Ya);
+                   U();
+                   a && a()
+               },
+               error: function() {
+                   Cb = !1;
+                   handleRequestError();
+                   b && b()
+               }
+           }))
+       }
+       function Qb(a) {
+           for (var b = "", d = 0; d < a.length; d++) {
+               var e = a[d];
+               e.src && !sc[e.src] && (b += "@font-face{font-family:'" + esc(e.family || e.name) + "';src:url(" + e.src + ")}",
+               sc[e.src] = !0)
+           }
+           b && $("head").append("<style>" + b + "</style>")
+       }
+       function Tc() {
+           if (!wb())
+               return [];
+           var a = localStorage.getItem("fonts_used");
+           a = a ? JSON.parse(a) : {};
+           var b = [], d;
+           for (d in a)
+               a.hasOwnProperty(d) && 2592E6 > Date.now() - a[d].last_used && b.push(a[d]);
+           b.sort(function(e, f) {
+               return f.last_used - e.last_used
+           });
+           return b
+       }
+       function ub(a, b, d, e) {
+           function f() {
+               h.updateColors()
+           }
+           function g(c) {
+               c = $(c.target);
+               c.closest(l)[0] || c.closest(k)[0] || c.closest(".BOX,.mask-back")[0] || !$.contains(S.documentElement, c[0]) || k.addClass("display-none")
+           }
+           d = d || {};
+b = '
+<textarea placeholder="' + esc(b) + '" class="mm-text"></textarea>
+'; b = b + '
+<button type="button" class="l but mm-font-options-btn" title="Font settings"><svg class="gear-icon" viewBox="0 0 22 22"><path d="M18.92 9.63a.33.33 0 0 0-.22-.13l-1.9-.3c-.1-.32-.25-.67-.43-1.01.12-.18.31-.42.56-.74.25-.31.43-.54.53-.69a.4.4 0 0 0 .09-.24c0-.1-.03-.17-.08-.23-.25-.35-.82-.94-1.72-1.77a.4.4 0 0 0-.26-.1c-.1 0-.18.03-.25.09l-1.48 1.11c-.28-.14-.6-.27-.93-.38l-.3-1.92a.3.3 0 0 0-.11-.22.4.4 0 0 0-.26-.09H9.85c-.2 0-.33.1-.38.3-.09.34-.19.98-.3 1.93-.33.1-.64.23-.95.4L6.78 4.51a.44.44 0 0 0-.27-.1c-.15 0-.48.24-.98.74s-.85.87-1.03 1.12a.44.44 0 0 0-.1.24c0 .08.04.17.11.25.47.56.84 1.04 1.12 1.44-.18.32-.31.64-.4.96l-1.95.29a.31.31 0 0 0-.2.13.4.4 0 0 0-.08.24v2.32c0 .09.03.17.09.24.05.07.12.12.22.13l1.9.28c.1.34.24.69.43 1.03l-.56.74c-.25.31-.43.54-.53.69a.4.4 0 0 0-.02.48c.28.37.85.96 1.72 1.75.08.08.17.11.26.11.1 0 .2-.03.26-.09l1.47-1.12c.29.15.6.28.94.4l.3 1.9c0 .1.04.17.11.23a.4.4 0 0 0 .26.09h2.31c.2 0 .33-.1.38-.3.09-.34.19-.98.3-1.93.32-.1.64-.23.95-.4l1.43 1.13c.1.06.2.1.27.1.16 0 .48-.25.98-.75.5-.49.85-.86 1.03-1.12.07-.07.1-.15.1-.24a.4.4 0 0 0-.1-.26c-.5-.61-.88-1.1-1.12-1.44.14-.26.27-.57.4-.95l1.93-.29a.32.32 0 0 0 .21-.13.4.4 0 0 0 .08-.24V9.87a.4.4 0 0 0-.08-.24m-6.03 3.27c-.52.52-1.15.78-1.89.78-.73 0-1.36-.26-1.88-.78A2.57 2.57 0 0 1 8.34 11c0-.74.26-1.36.78-1.89A2.57 2.57 0 0 1 11 8.34c.74 0 1.37.26 1.89.78.52.53.78 1.15.78 1.89s-.26 1.36-.78 1.89"/></svg></button>
+<button type="button" class="lr but sml mm-box-remove-btn">remove</button>
+Font <button type="button" class="mm-font-btn l but sml down-arrow">Impact</button><input type="hidden" class="mm-font" name="font" value="impact"/>
+' + cb("ALL CAPS", !0, {
+               className: "mm-all-caps"
+           });
+           b += cb("Bold", !1, {
+               className: "mm-font-bold"
+           });
+           b += cb("Italic", !1, {
+               className: "mm-font-italic"
+           });
+b = b + '
+' + radioBtn("Shadow", !0, {
+               className: "mm-outline-type"
+           }, "shadow");
+           b += radioBtn("Outline", !1, {
+               className: "mm-outline-type"
+           }, "outline");
+           b += radioBtn("None", !1, {
+               className: "mm-outline-type"
+           }, "none");
+b = b + '
+Outline Width <input class="ow" type="number" maxlength="1" min="0" max="9"/>
+Max Font Size (px) <input class="mm-size" type="number" name="size" value="' + ((d.maxFontSize || W()) + '" min="1" max="999"/>
+'); b = $(b + '
+Text Align
+<select class="mm-text-align"><option value="center">Center</option><option value="left">Left</option><option value="right">Right</option></select>
+Vertical Align
+<select class="mm-vertical-align"><option value="middle">Middle</option><option value="top">Top</option><option value="bottom">Bottom</option></select>
+Opacity
+<input class="mm-box-opacity" type="number" value="1" min="0" max="1" step="0.1"/>
+Bring to top layer
+<button type="button" class="l but sml mm-font-apply-to-all">Apply these settings to ALL text boxes</button>
+');
+           L.find(".mm-boxes").append(b);
+           var h = new tc(b,a,d);
+           m.push(h);
+           e && h.autoResize(J().w, J().h, !0);
+           var k = b.find(".mm-font-options-popup")
+             , l = b.find(".mm-font-options-btn");
+           l.on("click", function() {
+               if (k.hasClass("display-none"))
+                   $d.on("click", g);
+               else
+                   $d.off("click", g);
+               k.toggleClass("display-none")
+           });
+           new jb(b.find(".mm-font-color-picker"),Za[1],Za,f,"Change Font Color");
+           new jb(b.find(".mm-outline-color-picker"),Za[0],Za,f,"Change Outline Color");
+           2 < m.length && Uc(h.$box);
+           Db && Db(b)
+       }
+       function Uc(a) {
+           a.css({
+               background: "#fff"
+           }).animate({
+               opacity: 0
+           }, 500, function() {
+               $(this).css({
+                   background: "none",
+                   opacity: 1
+               })
+           })
+       }
+       function vb() {
+           Ca.naturalWidth ? (ob ? (x.save(),
+           x.fillStyle = ob,
+           x.fillRect(0, 0, R.width, R.height),
+           x.restore()) : x.clearRect(0, 0, R.width, R.height),
+           0 < J().rotation ? (x.translate(R.width / 2, R.height / 2),
+           x.rotate(J().rotation / 180 * Math.PI),
+           180 === J().rotation ? (x.translate(-R.width / 2, -R.height / 2),
+           x.drawImage(Ca, 0, 0, R.width, R.height),
+           x.translate(R.width / 2, R.height / 2)) : (x.translate(-R.height / 2, -R.width / 2),
+           x.drawImage(Ca, 0, 0, R.height, R.width),
+           x.translate(R.height / 2, R.width / 2)),
+           x.rotate(-J().rotation / 180 * Math.PI),
+           x.translate(-R.width / 2, -R.height / 2)) : x.drawImage(Ca, 0, 0, R.width, R.height)) : x.clearRect(0, 0, R.width, R.height);
+           uc && uc(x, R);
+           x.shadowBlur = 0;
+           pa && Na && x.drawImage(pa, 0, 0);
+           for (var a = !1, b = 0; b < m.length; b++)
+               if ("image" !== m[b].type || m[b].hidden || m[b].draw(),
+               "image" === m[b].type) {
+                   var d = m[b].getVals();
+                   .85 < d.w * d.h / (J().w * J().h) && (a = !0)
+               }
+           a !== Eb && (Eb = a,
+           ba.find(".mm-preview-msg").toggleClass("display-none", !Eb).text(Eb ? 'NOTE: The image you added covers most of the template. It might look better if you select it with "Upload new template" or search.' : ""));
+           for (b = 0; b < m.length; b++)
+               "text" !== m[b].type || m[b].hidden || m[b].draw()
+       }
+       function Fb() {}
+       function tc(a, b, d) {
+           function e(r) {
+               if (7 !== r.length || 1 === f.opacity)
+                   return r;
+               var v = parseInt(r.substr(1, 2), 16)
+                 , u = parseInt(r.substr(3, 2), 16);
+               r = parseInt(r.substr(5, 2), 16);
+               return "rgba(" + v + "," + u + "," + r + "," + f.opacity + ")"
+           }
+           d = d || {};
+           var f = this;
+           f.init(a);
+           var g, h = a.find(".mm-all-caps").hasClass("checked"), k = a.find(".mm-outline-type.checked").data("value"), l = a.find(".mm-font-bold").hasClass("checked"), c = a.find(".mm-font-italic").hasClass("checked"), n = a.find(".mm-text-align").val(), p = d.maxFontSize || a.find(".mm-size").val() >> 0 || W();
+           f.type = "text";
+           f.outline_width = Gb[k];
+           f.text = "";
+           f.font_color = "#ffffff";
+           f.outline_color = "#000000";
+           f.font = a.find(".mm-font").val() || "impact";
+           var t = new Dragger(f.$box,Aa,function() {
+               U();
+               Hb && Hb()
+           }
+           ,{
+               enforceBoundary: !0,
+               enableRotate: vc
+           });
+           t.bindMoveKeyEvents();
+           var E = a.find(".mm-text");
+           f.initEditSettings();
+           a.find(".mm-font-btn").click(function() {
+               Sc(function(r) {
+                   Q(r)
+               })
+           });
+           a.find(".mm-all-caps").change(function() {
+               h = $(this).hasClass("checked");
+               P()
+           });
+           a.find(".mm-size").change(function() {
+               p = g = Math.max(1, $(this).val() >> 0);
+               U()
+           }).keyup(function() {
+               p = g = Math.max(1, $(this).val() >> 0);
+               U()
+           });
+           a.find(".mm-outline-type").change(function() {
+               k = $(this).data("value");
+               f.outline_width = Gb[k];
+               a.find(".ow").val(f.outline_width);
+               U()
+           });
+           a.find(".mm-font-bold").change(function() {
+               l = $(this).hasClass("checked");
+               U()
+           });
+           a.find(".mm-font-italic").change(function() {
+               c = $(this).hasClass("checked");
+               U()
+           });
+           var M = function() {
+               f.outline_width = $(this).val() >> 0;
+               "none" === k && 0 < f.outline_width && (k = "shadow",
+               a.find(".mm-outline-type").removeClass("checked"),
+               a.find('.mm-outline-type[data-value="shadow"]').addClass("checked"));
+               U()
+           };
+           a.find(".ow").change(M).keyup(M).val(f.outline_width);
+           a.find(".mm-vertical-align").change(function() {
+               b = $(this).val();
+               U()
+           });
+           a.find(".mm-text-align").change(function() {
+               n = $(this).val();
+               U()
+           });
+           a.find(".mm-font-apply-to-all").click(function() {
+               for (var r = 0; r < m.length; r++) {
+                   var v = m[r]
+                     , u = v.$edit;
+                   v !== f && "text" === v.type && (v.setFont(f.font),
+                   v.setFontMaxSize(p),
+                   v.setForceCaps(h),
+                   u.find(".mm-outline-type").removeClass("checked"),
+                   u.find('.mm-outline-type[data-value="' + k + '"]').addClass("checked").change(),
+                   u.find(".mm-font-bold").toggleClass("checked", l).change(),
+                   u.find(".mm-font-italic").toggleClass("checked", c).change(),
+                   u.find(".ow").val(f.outline_width).change(),
+                   u.find(".mm-text-align").val(n).change(),
+                   u.find(".mm-box-opacity").val(f.opacity).change())
+               }
+           });
+           var P = f.setText = function(r) {
+               r = r !== oa ? r : E.val();
+               f.text = h ? r.toUpperCase() : r;
+               U()
+           }
+             , Q = f.setFont = function(r) {
+               r = r.toLowerCase() || "impact";
+               a.find(".mm-font").val(r);
+               a.find(".mm-font-label").text(r).attr("title", r);
+               f.font = r;
+               U()
+           }
+           ;
+           f.getFont = function() {
+               return f.font
+           }
+           ;
+           f.isForcedCaps = function() {
+               return h
+           }
+           ;
+           f.setForceCaps = function(r) {
+               h = !!r;
+               a.find(".mm-all-caps").toggleClass("checked", h);
+               P()
+           }
+           ;
+           f.outlineType = function() {
+               return k
+           }
+           ;
+           f.setOutlineType = function(r) {
+               k = r;
+               a.find('.mm-outline-type[data-value="' + r + '"]').click();
+               U()
+           }
+           ;
+           f.isFontBold = function() {
+               return l
+           }
+           ;
+           f.isFontItalic = function() {
+               return c
+           }
+           ;
+           f.getFontMaxSize = function() {
+               return p
+           }
+           ;
+           f.setFontMaxSize = function(r) {
+               a.find(".mm-size").val(r).change()
+           }
+           ;
+           f.verticalAlign = function() {
+               return b
+           }
+           ;
+           f.textAlign = function() {
+               return n
+           }
+           ;
+           f.updateColors = function() {
+               f.font_color = a.find(".mm-font-color-picker").data("picker").getColor();
+               f.outline_color = a.find(".mm-outline-color-picker").data("picker").getColor();
+               U()
+           }
+           ;
+           f.setFontColor = function(r) {
+               a.find(".mm-font-color-picker").data("picker").setColor(r)
+           }
+           ;
+           f.setOutlineWidth = function(r) {
+               a.find(".ow").val(r).change()
+           }
+           ;
+           f.setOutlineColor = function(r) {
+               a.find(".mm-outline-color-picker").data("picker").setColor(r)
+           }
+           ;
+           f.getVals = function() {
+               var r = t.getVals();
+               return {
+                   x: r.x / aa,
+                   y: r.y / aa,
+                   w: r.w / aa,
+                   h: r.h / aa,
+                   rotation: r.rotation,
+                   font: f.font,
+                   font_size: g / 1.32 / aa >> 0,
+                   font_max_size: p,
+                   font_color: f.font_color,
+                   font_shadow: "shadow" === k ? 1 : 0,
+                   outline_width: f.outline_width,
+                   outline_color: f.outline_color,
+                   force_caps: h ? 1 : 0,
+                   text_align: n,
+                   vertical_align: b
+               }
+           }
+           ;
+           f.setVals = function(r, v, u, w, F) {
+               t.setVals(r * aa >> 0, v * aa >> 0, u * aa >> 0, w * aa >> 0, F)
+           }
+           ;
+           f.constrainVals = function() {
+               t.constrainVals()
+           }
+           ;
+           f.toggleDrag = function(r) {
+               t.toggleDrag(r)
+           }
+           ;
+           f.dragEnabled = function() {
+               return t.dragEnabled()
+           }
+           ;
+           f.setVerticalAlign = function(r) {
+               a.find(".mm-vertical-align").val(r).change()
+           }
+           ;
+           f.setTextAlign = function(r) {
+               a.find(".mm-text-align").val(r).change()
+           }
+           ;
+           f.setPlaceholder = function(r) {
+               a.find(".mm-text").attr("placeholder", r)
+           }
+           ;
+           f.autoResize = function(r, v, u) {
+               if (u) {
+                   r = r * aa - 10;
+                   var w = v * aa / 4;
+                   u = v = 5;
+                   "bottom" === b ? u = 3 * w - 13 : "middle" === b && (u = 1.5 * w - 2);
+                   var F = 0
+               } else
+                   w = Fa / Ob,
+                   F = t.getVals(),
+                   v = w * F.x,
+                   u = w * F.y,
+                   r = w * F.w,
+                   w *= F.h,
+                   F = F.rotation;
+               t.setVals(v, u, r, w, F)
+           }
+           ;
+           f.draw = function() {
+               var r = t.getVals()
+                 , v = Z / Fa
+                 , u = r.x
+                 , w = r.y
+                 , F = r.w
+                 , X = r.h;
+               12 < r.w && (u = Math.round(v * r.x) + 3,
+               F = Math.round(v * r.w) - 6);
+               12 < r.h && (w = Math.round(v * r.y) + 3,
+               X = Math.round(v * r.h) - 6);
+               x.save();
+               x.shadowBlur = "shadow" === k ? f.outline_width : 0;
+               x.shadowColor = "shadow" === k ? e(f.outline_color) : "";
+               x.fillStyle = e(f.font_color);
+               for (var V = f.text, la = V.length, ca = 2 + la / 30 >> 0, N = V.trim().split(/\s+/).length, Oa = [], db = /\r\n?|\n/g; v = db.exec(V); )
+                   Oa.push(v.index);
+               v = Math.sqrt(la * X / F / 2.8) + .5 >> 0;
+               v = Math.max(Oa.length + 1, Math.min(N, v));
+               db = la / v;
+               var va = [];
+               N = [];
+               for (var eb = [], K = 0; K < la - 1; ) {
+                   var qa = V.slice(K + 1).search(/\s/);
+                   if (-1 !== qa)
+                       K = K + qa + 1,
+                       eb.push(K);
+                   else
+                       break
+               }
+               qa = p;
+               do {
+                   x.font = (l ? "bold " : "") + (c ? "italic " : "") + qa + "px " + f.font + ("impact" === f.font ? ",impac" : "");
+                   for (var G = 0; G <= v; G++)
+                       if (0 === G)
+                           va[G] = 0;
+                       else if (G === v)
+                           va[G] = la;
+                       else {
+                           var wa = (db * G >> 0) - ca;
+                           0 > wa && (wa = 0);
+                           var Pa = -1
+                             , xa = Infinity;
+                           for (K = 0; K < eb.length; K++) {
+                               var da = Math.abs(eb[K] - wa);
+                               da < xa && (Pa = eb[K],
+                               xa = da)
+                           }
+                           va[G] = Pa
+                       }
+                   for (G = 0; G < Oa.length; G++)
+                       if (wa = Oa[G],
+                       -1 === va.indexOf(wa)) {
+                           Pa = {};
+                           var $a = -1;
+                           xa = Infinity;
+                           for (K = 1; K < va.length - 1; K++) {
+                               var ya = va[K];
+                               da = Math.abs(ya - wa);
+                               da < xa && (-1 === Oa.indexOf(ya) || Pa[ya]) && ($a = K,
+                               xa = da);
+                               Pa[ya] = !0
+                           }
+                           va[$a] = wa
+                       }
+                   Oa.length && va.sort(function(Da, ea) {
+                       return Da > ea ? 1 : -1
+                   });
+                   for (G = 0; G < v; G++)
+                       ya = G ? va[G] + 1 : 0,
+                       da = V.substr(ya, va[G + 1] - ya),
+                       N[G] = {
+                           text: da
+                       };
+                   xa = 4 + .1 * qa;
+                   for (G = da = K = 0; G < v; G++)
+                       N[G].w = x.measureText(N[G].text).width,
+                       N[G].h = N[G].text ? .86 * qa : 0,
+                       N[G].w > K && (K = N[G].w),
+                       da += N[G].h + (G && N[G].text ? xa : 0);
+                   G = Math.ceil(qa * Math.min(F / K, X / da));
+                   qa = G < qa ? G : qa - 1
+               } while (K > F || da > X);
+               g = qa;
+               V = X - da;
+               "top" === b && (V = 0);
+               "middle" === b && (V /= 2);
+               r.rotation && (x.translate(u + F / 2, w + X / 2),
+               x.rotate(r.rotation / 180 * Math.PI),
+               x.translate(-u - F / 2, -w - X / 2));
+               la = V;
+               for (K = 0; K < v; K++)
+                   if (V = "left" === n ? 0 : "right" === n ? F - N[K].w : (F - N[K].w) / 2,
+                   la += N[K].h + (K && N[K].text ? xa : 0),
+                   da = N[K].text,
+                   "shadow" === k)
+                       for (ca = 0; ca < (f.outline_width ? 6 : 1); ca++)
+                           x.fillText(da, u + V, w + la - 2);
+                   else
+                       x.fillText(da, u + V, w + la - 2),
+                       f.outline_width && (x.strokeStyle = e(f.outline_color),
+                       x.lineWidth = f.outline_width,
+                       x.strokeText(da, u + V, w + la - 2));
+               r.rotation && (x.translate(u + F / 2, w + X / 2),
+               x.rotate(-r.rotation / 180 * Math.PI),
+               x.translate(-u - F / 2, -w - X / 2));
+               x.restore()
+           }
+           ;
+           E.on("keyup change", function() {
+               P()
+           });
+           Qa.after(f.$box);
+           d.coords && (d = d.coords,
+           t.setVals(d[0], d[1], d[2], d[3]))
+       }
+       function wc(a, b, d, e, f) {
+           var g = this;
+           g.init(a);
+           g.id = randHash(32);
+           g.type = "image";
+           g.element = b;
+           g.displayName = d;
+           g.isPreset = !!e;
+           g.templateId = f;
+           g.radius = 0;
+           var h = new Dragger(g.$box,Aa,function() {
+               U();
+               Hb && Hb()
+           }
+           ,{
+               enforceBoundary: !1,
+               enableRotate: vc
+           });
+           h.bindMoveKeyEvents();
+           g.initEditSettings();
+           new Slider(this.$edit.find(".mm-box-radius"),this.$edit.find(".mm-box-radius-slider"),0,{
+               min: 0,
+               max: 50,
+               step: 1,
+               val: 0,
+               update: function(k) {
+                   g.radius = k;
+                   U()
+               }
+           });
+           this.$edit.on("change", ".mm-box-radius", function() {
+               g.radius = Math.min(50, Math.max(0, $(this).val()));
+               U()
+           });
+           g.getVals = function() {
+               var k = h.getVals();
+               return {
+                   x: k.x / aa >> 0,
+                   y: k.y / aa >> 0,
+                   w: k.w / aa >> 0,
+                   h: k.h / aa >> 0,
+                   rotation: k.rotation
+               }
+           }
+           ;
+           g.setVals = function(k, l, c, n, p) {
+               h.setVals(k * aa >> 0, l * aa >> 0, c * aa >> 0, n * aa >> 0, p)
+           }
+           ;
+           g.constrainVals = function() {
+               h.constrainVals()
+           }
+           ;
+           g.toggleDrag = function(k) {
+               h.toggleDrag(k)
+           }
+           ;
+           g.dragEnabled = function() {
+               return h.dragEnabled()
+           }
+           ;
+           g.autoResize = function(k, l, c) {
+               if (c)
+                   if (k = l = Math.min(k * aa / 3 >> 0, l * aa / 3 >> 0),
+                   b.width > b.height) {
+                       c = k;
+                       var n = b.height / b.width * c
+                   } else
+                       n = k,
+                       c = b.width / b.height * n;
+               else {
+                   n = Fa / Ob;
+                   var p = h.getVals();
+                   k = n * p.x;
+                   l = n * p.y;
+                   c = n * p.w;
+                   n *= p.h
+               }
+               h.setVals(k, l, c, n)
+           }
+           ;
+           g.draw = function() {
+               var k = h.getVals()
+                 , l = Z / Fa
+                 , c = ~~Math.round(l * k.x)
+                 , n = ~~Math.round(l * k.y)
+                 , p = ~~Math.round(l * k.w);
+               l = ~~Math.round(l * k.h);
+               k.rotation && (x.translate(c + p / 2, n + l / 2),
+               x.rotate(k.rotation / 180 * Math.PI),
+               x.translate(-c - p / 2, -n - l / 2));
+               if (1 !== g.opacity || g.radius)
+                   x.save(),
+                   x.globalAlpha = g.opacity;
+               if (g.radius) {
+                   var t = g.radius / 100 * Math.min(p, l);
+                   x.beginPath();
+                   x.moveTo(c + t, n);
+                   x.arcTo(c + p, n, c + p, n + l, t);
+                   x.arcTo(c + p, n + l, c, n + l, t);
+                   x.arcTo(c, n + l, c, n, t);
+                   x.arcTo(c, n, c + p, n, t);
+                   x.closePath();
+                   x.clip()
+               }
+               x.drawImage(b, c, n, p, l);
+               (1 !== g.opacity || g.radius) && x.restore();
+               k.rotation && (x.translate(c + p / 2, n + l / 2),
+               x.rotate(-k.rotation / 180 * Math.PI),
+               x.translate(-c - p / 2, -n - l / 2))
+           }
+           ;
+           Qa.after(g.$box);
+           g.autoResize(J().w, J().h, !0);
+           h.lockRatio()
+       }
+       function xc(a) {
+           a.preventDefault();
+           var b = a.clientX - $(this).offset().left + $(z).scrollLeft();
+           a = a.clientY - $(this).offset().top + $(z).scrollTop();
+           var d = Z / Fa;
+           b = Math.round(d * b);
+           a = Math.round(d * a);
+           ha.beginPath();
+           x.beginPath();
+           ha.moveTo(b, a);
+           x.moveTo(b, a);
+           x.save();
+           x.lineCap = "round";
+           x.lineWidth = Ib;
+           x.strokeStyle = fb;
+           x.shadowColor = fb;
+           x.shadowBlur = 2;
+           ha.lineCap = "round";
+           ha.lineWidth = Ib;
+           ha.strokeStyle = fb;
+           ha.shadowColor = fb;
+           ha.shadowBlur = 2;
+           Sa = oa;
+           yc(b + .001, a + .001);
+           $("body").addClass("nosel");
+           Qa.on("vmousemove", zc);
+           $d.on("vmouseup", Ac)
+       }
+       function zc(a) {
+           var b = a.clientX - $(this).offset().left + $(z).scrollLeft();
+           a = a.clientY - $(this).offset().top + $(z).scrollTop();
+           var d = Z / Fa;
+           b = Math.round(d * b);
+           a = Math.round(d * a);
+           yc(b, a)
+       }
+       function yc(a, b) {
+           ha.lineTo(a, b);
+           x.lineTo(a, b);
+           Jb ? (ha.save(),
+           ha.globalCompositeOperation = "destination-out",
+           ha.stroke(),
+           ha.restore(),
+           vb()) : (ha.stroke(),
+           x.stroke());
+           ha.beginPath();
+           x.beginPath();
+           ha.moveTo(a, b);
+           x.moveTo(a, b);
+           Jb || (Na = !0)
+       }
+       function Ac() {
+           x.restore();
+           $("body").removeClass("nosel");
+           Qa.off("vmousemove", zc);
+           $d.off("vmouseup", Ac)
+       }
+       function Bc() {
+           $("#mm-select-my").hide();
+           var a = $("#mm-select-popular");
+           a.show();
+           $(".mm-tab").removeClass("set");
+           $("#memetab").addClass("set");
+           if (!a.html()) {
+var b = '
+Blank
+' + (icon("sparkle") + "AI
+");
+               var d = 0, e = "//s.imgflip.com/ms" + spriteNum + ".jpg", f;
+               for (f in q)
+                   if (q.hasOwnProperty(f) && !isNaN(f)) {
+                       var g = 'style="background:url(' + e + ") " + -50 * d + 'px 0px;"';
+                       d++;
+                       var h = esc(q[f].name);
+b += '
+'
+                   }
+               a.append(b + '<a class="l but" tabindex="-1" id="allTemplates" href="/memetemplates">View All Meme Templates</a>')
+           }
+       }
+       function Vc() {
+           $("#mm-select-popular").hide();
+           $("#mm-select-my").show();
+           $(".mm-tab").removeClass("set");
+           $("#mytab").addClass("set");
+           Cc || (I.user.id || -1 === z.location.href.search("memegenerator") ? ($.getJSON("/ajax_get_my_memes", function(a) {
+               if (a.error)
+                   MSG(a.error, "red");
+               else {
+                   $.extend(q, a);
+                   var b = "", d;
+                   for (d in a) {
+                       a = q[d];
+                       var e = a.img ? a.img.src : IMAGE_DOMAIN + "4/" + (+a.id).toString(36) + "." + (a.has_transparency ? "png" : "jpg");
+                       b += "<img class='im um' src='" + esc(e) + "' data-key='" + esc(d) + "' title='" + esc(a.name) + "'/>"
+                   }
+b = b || "
+Upload an image to create your first custom generator!
+";
+                   $("#mm-select-my").append(b)
+               }
+           }),
+Cc = !0) : $("#mm-select-my").append("
+<a rel='nofollow' href='/login?redirect=/memegenerator'>Login</a> or <a rel='nofollow' href='/signup?redirect=/memegenerator'>Signup</a> to view any custom templates you upload!"))
+       }
+       function gb(a, b, d, e, f, g, h, k) {
+           b.removeClass("mm-hidden");
+           var l = a.val().trim();
+           if (!0 === f || l !== a.data("previous_query")) {
+               g = !1 !== g;
+               var c = Date.now();
+               Dc = c;
+               a.data("previous_query", l);
+               var n = l + (d ? "@^" : "") + (e ? "^@" : "") + (g ? "^" : "") + (h ? "*" : "") + (l ? "" : k);
+               Vb[n] ? Ec(b, Vb[n], l) : (b.find(".mm-search-loading").addClass("mm-search-visible"),
+               $.ajax({
+                   url: "/ajax_meme_search_new",
+                   data: {
+                       q: l,
+                       event_type: k,
+                       limit: 100,
+                       transparent_only: e ? 1 : 0,
+                       include_nsfw: d ? 1 : 0,
+                       gifs_only: h ? 1 : 0,
+                       allow_gifs: g ? 1 : 0
+                   },
+                   dataType: "json",
+                   success: function(p) {
+                       var t = c === Dc;
+                       t && b.find(".mm-search-loading").removeClass("mm-search-visible");
+                       if (p.error)
+                           error_dialog(p.error);
+                       else {
+                           for (var E = 0; E < p.results.length; E++)
+                               hb[+p.results[E].id] = p.results[E];
+                           Vb[n] = p.results;
+                           t && Ec(b, p.results, l)
+                       }
+                   }
+               }))
+           }
+       }
+       function Ec(a, b, d) {
+           for (var e = "", f = {}, g = 0; g < b.length; g++) {
+               f[b[g].result_type] = f[b[g].result_type] || [];
+               var h = f[b[g].result_type]
+                 , k = h.push
+                 , l = b[g];
+               var c = '<tr class="mm-search-result' + (10 <= f[b[g].result_type].length ? " display-none" : "") + '" data-id="' + l.id + '">';
+c = c + '<img class="mm-search-result-img" src="https:' + (IMAGE_DOMAIN + "2/" + (+l.id).toString(36) + '.jpg"/>'); c = c + '' + esc(l.name); "mp4" === l.file_type && (c += '
+animated
+'); +l.has_transparency && (c += '
+contains transparency
+'); +l.pro_only && (c += '
+premium
+'); k.call(h, c + "") } e = f.recent || "" === d ? e + Wb(f.recent, "recent", "Recent Templates") : e + Wb(f.user, "user", "Meme Templates"); f.my && (e += Wb(f.my, "my", "My Templates")); e += '
+';
+           b = d ? "/memesearch?q=" + esc(encodeURIComponent(d)) : "/memetemplates";
+e += '<a class="l but mm-search-view-all-btn" href="' + b + '">View All Meme Templates</a>
+';
+           a.find(".mm-search-results-tables").html(e);
+           a.removeClass("mm-hidden");
+           a.data("latest_query", d)
+       }
+       function Wb(a, b, d) {
+           a = a || [];
+           if ("my" === b && !a.length)
+               return "";
+b = '" + a.join(""); 10 < a.length && (b += ''); return b + "
+' + d; a.length || (b += '
+no results
+'); b = b + "
+‹ Prev
+Next ›
+"
+       }
+       function Kb(a, b, d) {
+           $.ajax({
+               url: "/ajax_meme_search_event",
+               type: "post",
+               dataType: "json",
+               data: {
+                   meme_id: a,
+                   type: b,
+                   query: d.data("latest_query")
+               }
+           })
+       }
+       function Fc(a, b, d, e) {
+           for (var f = ""; b < d; b++)
+               if (!e || a[b].pro_only)
+                   if (e || !a[b].pro_only) {
+                       var g = ~~a[b].id
+                         , h = a[b].name
+                         , k = a[b].pro_only ? 1 : ""
+                         , l = "https:" + IMAGE_DOMAIN + (a[b].use_thumbnail ? "4/" : "") + g.toString(36) + "." + a[b].file_type;
+f += '
+';
+                       f += '<img class="mm-quick-img" src="' + esc(l) + '"/>';
+f += "
+"
+                   }
+           return f
+       }
+       function Xb(a, b, d, e) {
+           var f = new Image;
+           "http" === a.substr(0, 4) && f.setAttribute("crossorigin", "anonymous");
+           $(f).load(function() {
+               function g(c) {
+                   c = $(c.target);
+                   c.closest(l)[0] || c.closest(k)[0] || k.addClass("display-none")
+               }
+var h = $("
+\n\t\t\t\t\t\t<button type='button' class='mm-box-remove' title='remove this image'>" + X_SVG + "</button>\n\t\t\t\t\t\t
+\n\t\t\t\t\t\t\t<button type='button' class='mm-box-options-btn l but' title='image settings'><svg class=\"gear-icon\" viewBox=\"0 0 22 22\"><path d=\"M18.92 9.63a.33.33 0 0 0-.22-.13l-1.9-.3c-.1-.32-.25-.67-.43-1.01.12-.18.31-.42.56-.74.25-.31.43-.54.53-.69a.4.4 0 0 0 .09-.24c0-.1-.03-.17-.08-.23-.25-.35-.82-.94-1.72-1.77a.4.4 0 0 0-.26-.1c-.1 0-.18.03-.25.09l-1.48 1.11c-.28-.14-.6-.27-.93-.38l-.3-1.92a.3.3 0 0 0-.11-.22.4.4 0 0 0-.26-.09H9.85c-.2 0-.33.1-.38.3-.09.34-.19.98-.3 1.93-.33.1-.64.23-.95.4L6.78 4.51a.44.44 0 0 0-.27-.1c-.15 0-.48.24-.98.74s-.85.87-1.03 1.12a.44.44 0 0 0-.1.24c0 .08.04.17.11.25.47.56.84 1.04 1.12 1.44-.18.32-.31.64-.4.96l-1.95.29a.31.31 0 0 0-.2.13.4.4 0 0 0-.08.24v2.32c0 .09.03.17.09.24.05.07.12.12.22.13l1.9.28c.1.34.24.69.43 1.03l-.56.74c-.25.31-.43.54-.53.69a.4.4 0 0 0-.02.48c.28.37.85.96 1.72 1.75.08.08.17.11.26.11.1 0 .2-.03.26-.09l1.47-1.12c.29.15.6.28.94.4l.3 1.9c0 .1.04.17.11.23a.4.4 0 0 0 .26.09h2.31c.2 0 .33-.1.38-.3.09-.34.19-.98.3-1.93.32-.1.64-.23.95-.4l1.43 1.13c.1.06.2.1.27.1.16 0 .48-.25.98-.75.5-.49.85-.86 1.03-1.12.07-.07.1-.15.1-.24a.4.4 0 0 0-.1-.26c-.5-.61-.88-1.1-1.12-1.44.14-.26.27-.57.4-.95l1.93-.29a.32.32 0 0 0 .21-.13.4.4 0 0 0 .08-.24V9.87a.4.4 0 0 0-.08-.24m-6.03 3.27c-.52.52-1.15.78-1.89.78-.73 0-1.36-.26-1.88-.78A2.57 2.57 0 0 1 8.34 11c0-.74.26-1.36.78-1.89A2.57 2.57 0 0 1 11 8.34c.74 0 1.37.26 1.89.78.52.53.78 1.15.78 1.89s-.26 1.36-.78 1.89\"/></svg></button>\n\t\t\t\t\t\t\t
+\n\t\t\t\t\t\t\t\t
+\n\t\t\t\t\t\t\t\t\tOpacity\n\t\t\t\t\t\t\t\t\t<input class='mm-box-opacity' type='number' value='1' min='0' max='1' step='0.1'/>\n\t\t\t\t\t\t\t\t\t
+\n\t\t\t\t\t\t\t\t
+\n\t\t\t\t\t\t\t\t
+\n\t\t\t\t\t\t\t\t\tRadius\n\t\t\t\t\t\t\t\t\t<input class='mm-box-radius' type='number' value='0' min='0' max='50' step='1'/>\n\t\t\t\t\t\t\t\t\t
+\n\t\t\t\t\t\t\t\t
+\n\t\t\t\t\t\t\t\t
+Bring to top layer
+\n\t\t\t\t\t\t\t
+\n\t\t\t\t\t\t
+\n\t\t\t\t\t\t
+" + esc(b) + "
+\n\t\t\t\t\t
+");
+               L.find(".mm-boxes").append(h);
+               m.push(new wc(h,f,b,d,e));
+               var k = h.find(".mm-box-options-popup")
+                 , l = h.find(".mm-box-options-btn");
+               l.on("click", function() {
+                   if (k.hasClass("display-none"))
+                       $d.on("click", g);
+                   else
+                       $d.off("click", g);
+                   k.toggleClass("display-none")
+               });
+               U();
+               loading(!1);
+               bb(!0);
+               Db && Db(h)
+           });
+           f.src = a
+       }
+       C = C || {};
+       var D = this, Gb = {
+           shadow: 5,
+           outline: 1,
+           none: 0
+       }, ba = $(C.$main || ".mm-main"), pb = $(C.$previewOuter || "#mm-preview-outer"), Aa = $(C.$preview || ".mm-preview"), Qa = Aa.find(".mm-canv"), Ca = Aa.find(".mm-img")[0], L = $(C.$settings || "#mm-settings"), Ta = $("#mm-search"), qb = C.$drawPanel || pb.find(".mm-draw-panel"), Z, Ga, Fa = pb.width(), Ob = Fa, yb, Wc = C.noDraw, Yb = C.numTexts >> 0, jc = !1, Za = "#000000 #ffffff #995555 #ff3333 #ff8800 #eeee00 #22ee22 #00bff3 #3333ff #dd00cc".split(" "), Na = !1, ib = !1, Jb = !1, aa = 1, vc = C.allowBoxRotation, ob = "#ffffff", ua, ia = "", Ja = "", zb = "#000000", lb = "", Gc = !1, Eb = !1, Hc = C.selectCallback, Hb = C.draggerCallback, Db = C.boxAdded, Ic = C.boxRemoved, uc = C.preDraw, pa, Sa, ha, fb, Ib = 5, m, ta, R = Qa[0];
+       R.getContext && R.toDataURL && R.getContext("2d") || alert("The Meme Generator requires a modern browser with HTML5 canvas support. Your browser is too old. Try Chrome or Firefox.");
+       var x = R.getContext("2d");
+       D.hideBox = function(a, b) {
+           return m[a].hidden ? !1 : (m[a].hidden = !0,
+           b ? vb() : U(),
+           !0)
+       }
+       ;
+       D.showBox = function(a, b) {
+           return m[a].hidden ? (m[a].hidden = !1,
+           b ? vb() : U(),
+           !0) : !1
+       }
+       ;
+       D.previewWidth = function() {
+           return Fa
+       }
+       ;
+       D.setMaxPreviewHeight = function(a) {
+           yb = a
+       }
+       ;
+       D.canvasWidth = function() {
+           return Z
+       }
+       ;
+       D.canvasHeight = function() {
+           return Ga
+       }
+       ;
+       D.setCanvasWidth = function(a) {
+           var b = W()
+             , d = J();
+           Z = Math.round(a);
+           Ga = Math.round(d.h / d.w * Z);
+           Qa.attr({
+               width: Z,
+               height: Ga
+           });
+           ja(Z, Ga);
+           Na && U();
+           for (a = 0; a < m.length; a++)
+               "text" === m[a].type && m[a].getFontMaxSize() === b && m[a].setFontMaxSize(W());
+           Y(Math.min(Z, pb.width()))
+       }
+       ;
+       D.setTransparencyColor = function(a) {
+           ob = a
+       }
+       ;
+       D.setFont = function(a) {
+           for (var b = 0; b < m.length; b++)
+               "text" === m[b].type && m[b].setFont(a)
+       }
+       ;
+       D.setForceCaps = function(a) {
+           for (var b = 0; b < m.length; b++)
+               m[b].setForceCaps && m[b].setForceCaps(a)
+       }
+       ;
+       D.ctx = function() {
+           return x
+       }
+       ;
+       D.canv = function() {
+           return R
+       }
+       ;
+       var J = D.currentMeme = function() {
+           return q[ta]
+       }
+       ;
+       D.text = D.getText = function(a) {
+           if (a !== oa)
+               return m[a] ? (m[a].text || "").trim() : "";
+           a = "";
+           for (var b = 0; b < m.length; b++)
+               m[b].text && (a += (a ? " " : "") + m[b].text.trim());
+           return a
+       }
+       ;
+       D.boxCount = function(a) {
+           for (var b = 0, d = m.length - 1; 0 <= d; d--)
+               a && m[d].type !== a || b++;
+           return b
+       }
+       ;
+       D.isEmpty = function() {
+           return !D.getText() && !D.boxCount("image") && !Na
+       }
+       ;
+       D.memeData = function(a, b) {
+           var d = []
+             , e = 0
+             , f = 0;
+           a = a || Z / J().w;
+           b = b || Ga / J().h;
+           for (var g = 0; g < m.length; g++) {
+               var h = m[g].getVals();
+               d.push({
+                   type: m[g].type,
+                   x: a * h.x >> 0,
+                   y: b * h.y >> 0,
+                   w: a * h.w >> 0,
+                   h: b * h.h >> 0,
+                   rotation: h.rotation,
+                   opacity: m[g].opacity
+               });
+               "text" === m[g].type ? $.extend(d[g], {
+                   font_color: m[g].font_color,
+                   outline_width: m[g].outline_width,
+                   outline_color: m[g].outline_color,
+                   font: m[g].getFont(),
+                   font_size: h.font_size * b >> 0,
+                   font_max_size: m[g].getFontMaxSize(),
+                   font_shadow: "shadow" === m[g].outlineType() ? 1 : 0,
+                   font_bold: m[g].isFontBold() ? 1 : 0,
+                   font_italic: m[g].isFontItalic() ? 1 : 0,
+                   force_caps: m[g].isForcedCaps() ? 1 : 0,
+                   text_align: m[g].textAlign(),
+                   vertical_align: m[g].verticalAlign(),
+                   text: m[g].isForcedCaps() ? m[g].text.toUpperCase() : m[g].text
+               }) : "image" === m[g].type && ($.extend(d[g], {
+                   template_id: m[g].templateId,
+                   display_name: m[g].displayName,
+                   radius: m[g].radius
+               }),
+               e++,
+               m[g].isPreset && f++)
+           }
+           h = ua !== oa ? q[ua] : J();
+           return {
+               boxes: d,
+               template: 100 < h.id ? h.id : "",
+               template_url: J().template_url || "",
+               templates: J().templates,
+               num_imgs: e,
+               num_scumbag_hats: f,
+               transparency_color: L.find(".mm-transparency-color-wrap").hasClass("display-none") ? "" : ob,
+               spacing_type: ia,
+               spacing_color: "custom" === Ja ? zb : Ja,
+               spacing_size: lb,
+               effects: J().effects || "",
+               has_drawing: Na ? 1 : 0
+           }
+       }
+       ;
+       var Xc = D.toggleSetDefaultSettingsBtn = function() {
+           var a = I.user.id && (3 <= I.user.priv || I.user.id === q[ta].uid);
+           L.find(".mm-set-default-settings").toggle(!!a)
+       }
+       ;
+       D.ajaxSetDefaultSettings = function() {
+           if (confirm("This will change the default text box settings for everyone who uses this template in the future, including text box positions, font family, and font colors. Are you sure you want to save your current text box settings as the default?")) {
+               for (var a = [], b = 0; b < m.length; b++)
+                   "text" === m[b].type && a.push(m[b].getVals());
+               loading("Saving text box settings");
+               $.ajax({
+                   url: "/ajax_set_meme_positions",
+                   type: "post",
+                   dataType: "json",
+                   data: {
+                       meme_id: J().id,
+                       settings: a
+                   },
+                   success: function(d) {
+                       loading(!1);
+                       d.error ? error_dialog(d.error) : MSG("Settings Saved!", "green")
+                   }
+               })
+           }
+       }
+       ;
+       D.reset = function() {
+           if (D.isEmpty() || confirm("Are you sure you want to reset to an empty template?"))
+               Na && (pa.width = pa.width,
+               Na = !1),
+               $(".mm-text").val("").change(),
+               $(".gen-anon,.gen-private").removeClass("checked"),
+               D.select(ua || ta),
+               ib && Jc()
+       }
+       ;
+       D.removeBox = function(a) {
+           m[a].$box.remove();
+           m[a].$edit.remove();
+           m.splice(a, 1);
+           Ic && Ic(a)
+       }
+       ;
+       D.getBoxes = function() {
+           return m
+       }
+       ;
+       D.select = function(a, b, d) {
+           if ("ai" === a)
+               Oc();
+           else if ("spaced" !== a && ua !== oa && !1 !== d && ba.find(".mm-spacing-type").val("").change(),
+           "blank" !== a || q.blank) {
+               var e = q[ta];
+               ta = a;
+               var f = q[a];
+               d = f.w;
+               var g = f.h;
+               Z = O(f.w, f.h);
+               Ga = f.h / f.w * Z;
+               ma(Math.min(Z, pb.width()));
+               if (!1 !== b) {
+                   for (b = m.length - 1; 0 <= b; b--)
+                       "text" !== m[b].type && D.removeBox(b);
+                   var h = Math.min(2, m.length);
+                   if (f.default_settings) {
+                       var k = JSON.parse(f.default_settings);
+                       h = k.length - m.length;
+                       for (b = 0; b < h; b++)
+                           D.addText("middle");
+                       h = k.length
+                   } else
+                       1 < m.length && (m[0].setVerticalAlign("top"),
+                       m[1].setVerticalAlign("bottom"),
+                       m[0].setPlaceholder("Top Text"),
+                       m[1].setPlaceholder("Bottom Text"));
+                   for (b = m.length - 1; b >= h; b--)
+                       D.removeBox(b);
+                   h = [];
+                   e && e.default_settings && (h = JSON.parse(e.default_settings));
+                   for (b = 0; b < m.length; b++)
+                       if (m[b].autoResize(d, g, !0),
+                       k && k[b]) {
+                           e = k[b];
+                           f.rotation || m[b].setVals(e.x, e.y, e.w, e.h, e.rotation);
+                           Rc(tb, e.font) || Bb(e.font) || qc();
+                           m[b].setFont(e.font);
+                           m[b].setFontMaxSize(e.font_max_size !== oa ? e.font_max_size : W());
+                           m[b].setFontColor(e.font_color);
+                           var l = e.font_shadow !== oa ? e.font_shadow ? "shadow" : 0 < e.outline_width ? "outline" : "none" : "shadow";
+                           m[b].setOutlineType(l);
+                           m[b].setOutlineWidth(e.outline_width !== oa ? e.outline_width : Gb[l]);
+                           m[b].setOutlineColor(e.outline_color);
+                           m[b].setForceCaps(e.force_caps);
+                           m[b].setTextAlign(e.text_align);
+                           m[b].setVerticalAlign(e.vertical_align);
+                           m[b].setPlaceholder("Text #" + (b + 1))
+                       } else {
+                           e = h[b] || {};
+                           e.font === m[b].getFont() && m[b].setFont("impact");
+                           e.font_max_size === m[b].getFontMaxSize() && m[b].setFontMaxSize(W());
+                           e.font_color === m[b].font_color && m[b].setFontColor("#ffffff");
+                           if (e.font_shadow === m[b].font_shadow || e.outline_width === m[b].outline_width)
+                               m[b].setOutlineType("shadow"),
+                               m[b].setOutlineWidth(Gb.shadow);
+                           e.outline_color === m[b].outline_color && m[b].setOutlineColor("#000000");
+                           e.force_caps === m[b].isForcedCaps() && m[b].setForceCaps(!0);
+                           e.text_align === m[b].textAlign() && m[b].setTextAlign("center")
+                       }
+               }
+               k = sa(f);
+               Qa.attr({
+                   width: Z,
+                   height: Ga
+               });
+               ja(Z, Ga);
+               d = $(Ca).attr("src");
+               k !== d && ($(Ca).off("load").on("load", function() {
+                   var c = q[ua] || f;
+                   if (0 !== c.has_transparency && 1 !== c.has_transparency && x.getImageData) {
+                       var n = S.createElement("canvas")
+                         , p = Ca.naturalWidth
+                         , t = Ca.naturalHeight;
+                       n.width = p;
+                       n.height = t;
+                       n.getContext("2d").drawImage(Ca, 0, 0, p, t);
+                       c.has_transparency = Yc(n) ? 1 : 0
+                   }
+                   n = L.find(".mm-transparency-color-picker");
+                   c.has_transparency && (n.data("picker") || new jb(n,ob,Za,function(E) {
+                       ob = E;
+                       U()
+                   }
+                   ,"Change Transparency Color"));
+                   n.closest(".mm-transparency-color-wrap").toggleClass("display-none", !c.has_transparency);
+                   U()
+               }),
+               k ? ("http" === k.substr(0, 4) ? Ca.setAttribute("crossorigin", "anonymous") : Ca.removeAttribute("crossorigin"),
+               $(Ca).attr("src", k)) : d && $(Ca).removeAttr("src"));
+               U();
+               $("#mm-meme-title").text(f.name || "Untitled Template").css({
+                   "font-weight": 700
+               });
+               L.find(".mm-effect").each(function() {
+                   var c = $(this).find(".check-wrap");
+                   f.effects && f.effects[$(this).data("type")] ? (c.addClass("checked"),
+                   $(this).find("input").val(f.effects[$(this).data("type")]),
+                   $(this).find("input,.mm-effect-slider").removeClass("display-none")) : c.hasClass("checked") && c.removeClass("checked").change()
+               });
+               L.find(".mm-blank-opts").toggleClass("display-none", "blank" !== a);
+               Xc();
+               Hc && Hc(f)
+           } else
+               La()
+       }
+       ;
+       D.setMemes = function(a) {
+           q = a
+       }
+       ;
+       D.addTextAuto = function() {
+           var a = D.boxCount("text");
+           ub(1 < a ? "middle" : "top", "Text #" + (a + 1), {}, !0);
+           bb(!0)
+       }
+       ;
+       D.init = function() {
+           m = [];
+           ta = 0;
+           if (!Wc) {
+qb.html('<button type="button" class="mm-erase lr but sml">erase</button><button type="button" class="mm-erase-all lr but sml">erase all</button><button type="button" class="mm-draw-done-btn l but sml">Done</button>
+');
+               pa = $("<canvas/>")[0];
+               ha = pa.getContext("2d");
+               qb.on("click", ".mm-erase", function() {
+                   Jb = !Jb;
+                   $(this).toggleClass("lr").toggleClass("r")
+               });
+               qb.on("click", ".mm-erase-all", function() {
+                   confirm("Are you sure you want to erase your entire drawing?") && (pa.width = pa.width,
+                   Na = !1,
+                   U())
+               });
+               var a = new Slider("",qb.find(".mm-draw-width-slider"),0,{
+                   min: 1,
+                   max: 32,
+                   val: Ib,
+                   showVal: !0,
+                   update: function(c) {
+                       Ib = c
+                   }
+               });
+               fb = Za[3];
+               a.setBG(fb);
+               new jb(qb.find(".mm-draw-color-picker"),Za[3],Za,function(c) {
+                   fb = c;
+                   a.setBG(c)
+               }
+               ,"Change Line Color")
+           }
+           1 < Yb && ub("top", "Top Text");
+           0 < Yb && ub("bottom", "Bottom Text");
+           for (var b = 2; b < Yb; b++)
+               ub("middle", "Text #" + (b + 1));
+           var d = $("#mm-select-popular")
+             , e = $("#mm-search-dropdown")
+             , f = e.find(".mm-search-nsfw")
+             , g = e.find(".mm-search-gifs-only");
+           Ta.on("keyup change paste focus", debounce(function() {
+               Ta.is(":focus") && gb(Ta, e, f.hasClass("checked"), !1, !1, !0, g.hasClass("checked"), "select")
+           }, 300));
+           f.on("change", function() {
+               gb(Ta, e, f.hasClass("checked"), !1, !0, !0, g.hasClass("checked"), "select")
+           });
+           g.on("change", function() {
+               gb(Ta, e, f.hasClass("checked"), !1, !0, !0, g.hasClass("checked"), "select")
+           });
+           Ta.on("keydown", function(c) {
+               13 === c.which && (Ta.blur(),
+               e.find(".mm-search-result").eq(0).click())
+           });
+           $d.on("click", function(c) {
+               c = $(c.target);
+               c.closest(Ta)[0] || c.closest(e)[0] || e.addClass("mm-hidden")
+           });
+           e.on("click", ".mm-search-result", function() {
+               var c = +$(this).data("id");
+               for (n in q)
+                   if (q.hasOwnProperty(n) && +q[n].id === c) {
+                       mm.select(n);
+                       e.addClass("mm-hidden");
+                       Kb(c, "select_meme_click", e);
+                       return
+                   }
+               if ("mp4" === hb[c].file_type)
+                   confirm("This meme is animated so you will be redirected to the GIF Maker. Continue?") && (loading("Opening GIF Maker"),
+                   setTimeout(function() {
+                       var t = hb[c]
+                         , E = t.name.trim().replace(/\s+/, "-").replace(/[^a-zA-Z0-9\-]/, "");
+                       z.location = "/gif-maker/" + (E ? t.id + "/" + E : t.id)
+                   }, 500),
+                   Kb(c, "select_meme_click", e));
+               else {
+                   q["search" + c] = hb[c];
+                   var n = IMAGE_DOMAIN + "2/" + (+c).toString(36) + ".jpg";
+                   var p = hb[c].name;
+                   d.prepend('<img class="im" src="' + n + '" data-key="search' + esc(c) + '" alt="' + esc(p) + '" title="Caption ' + esc('"' + p + '"') + '"/>');
+                   mm.select("search" + c);
+                   e.addClass("mm-hidden");
+                   Kb(c, "select_meme_click", e)
+               }
+           });
+           $d.on("click", ".mm-search-prev,.mm-search-next", function() {
+               for (var c = $(this).closest(".mm-search-results-table").find(".mm-search-result"), n = 0, p = 0; p < c.length; p++)
+                   if (!c.eq(p).hasClass("display-none")) {
+                       n = p;
+                       break
+                   }
+               $(this).hasClass("mm-search-next") ? n < c.length - 1 && (n += 10) : 0 < n && (n -= 10);
+               c.addClass("display-none");
+               for (p = n; p < n + 10; p++)
+                   c.eq(p).removeClass("display-none");
+               $(this).parent().find(".mm-search-prev").toggleClass("disabled", 0 === n);
+               $(this).parent().find(".mm-search-next").toggleClass("disabled", n >= c.length - 10)
+           });
+           L.on("click", "#allTemplates", function() {
+               var c = Ta.val();
+               c && $(this).attr("href", "/memesearch?q=" + encodeURIComponent(c))
+           });
+           Aa.hover(function() {
+               m[0] && m[0].dragEnabled() && Aa.find(".drag-box").removeClass("off")
+           }, function() {
+               m[0] && m[0].dragEnabled() && Aa.find(".drag-box").addClass("off")
+           });
+           L.find(".mm-add-text").click(D.addTextAuto);
+           L.on("click", ".mm-box-remove,.mm-box-remove-btn", function() {
+               for (var c = $(this).closest(".mm-box-edit"), n = 0; n < m.length; n++)
+                   if (m[n].$edit.is(c)) {
+                       if (!confirm("Are you sure you want to remove this " + ("image" === m[n].type ? "image" : "text box") + "?"))
+                           break;
+                       D.removeBox(n);
+                       D.preview();
+                       break
+                   }
+           });
+           Ua.on("copy", function(c) {
+               var n = $(S.activeElement).closest(".drag-box");
+               if (n.hasClass("drag-top"))
+                   for (var p = 0; p < m.length; p++)
+                       m[p].$box.is(n) && "image" === m[p].type && ((c.originalEvent || c).clipboardData.setData("text/plain", "imgflip-box:" + m[p].id),
+                       c.preventDefault(),
+                       MSG(esc(m[p].displayName) + " copied!", "green", 2E3))
+           });
+           Ua.on("paste", function(c) {
+               var n = (c.originalEvent || c).clipboardData.getData("text");
+               if (n = n ? n.split("imgflip-box:")[1] : "")
+                   for (c.preventDefault(),
+                   c = 0; c < m.length; c++)
+                       m[c].id === n && "image" === m[c].type && Xb(m[c].element.src, m[c].displayName, m[c].isPreset, m[c].templateId)
+           });
+           L.find(".mm-reset").click(D.reset);
+           L.find(".mm-toggle-drag").change(function() {
+               bb($(this).hasClass("checked"))
+           });
+           L.find(".mm-no-watermark").change(function() {
+               proType() || (kb("No Watermark", "You can remove the imgflip.com watermark with Imgflip Pro Basic!"),
+               $(this).removeClass("checked"))
+           });
+           L.find(".mm-output-original-resolution").change(function() {
+               jc = $(this).hasClass("checked");
+               var c = J();
+               D.setCanvasWidth(O(c.w, c.h));
+               U()
+           });
+           L.find(".mm-add-effects").on("click", function() {
+               L.find(".mm-effect-opts").toggleClass("display-none")
+           });
+           L.find(".mm-toggle-ai").on("click", function() {
+               L.find(".mm-ai-opts").toggleClass("display-none");
+               ra()
+           });
+           L.find(".mm-ai-generate").on("click", function() {
+               na()
+           });
+           var h = debounce(za, 200);
+           L.find(".mm-effect").each(function() {
+               var c = $(this)
+                 , n = c.find(".check-wrap")
+                 , p = c.find("input")
+                 , t = c.find(".mm-effect-slider");
+               Slider(p, t, 0, {
+                   min: +p.attr("min"),
+                   max: +p.attr("max"),
+                   step: +p.attr("step"),
+                   update: h
+               });
+               n.on("change", function() {
+                   n.hasClass("checked") ? (p.add(t).removeClass("display-none"),
+                   p.val(c.data("initial")).change()) : (p.add(t).addClass("display-none"),
+                   p.val(0).change())
+               })
+           });
+           $("#mm-show-upload").click(lc);
+           ba.on("click", ".mm-add-img", function() {
+               Zc()
+           });
+           ba.on("click", ".mm-rotate", Wa);
+           ba.on("click", ".mm-add-spacing", function() {
+               var c = ba.find(".mm-spacing-type");
+               "" === c.val() ? c.val("top").change() : c.val("").change()
+           });
+           ba.on("change", ".mm-spacing-type,.mm-spacing-color,.mm-spacing-size", Ia);
+           var k = debounce(Ia, 100);
+           new jb(ba.find(".mm-spacing-color-picker"),zb,["#000000", "#ffffff"],function(c) {
+               zb = c;
+               k()
+           }
+           );
+           ba.on("change", ".mm-blank-width,.mm-blank-height", La);
+           ba.on("click", ".mm-blank-ratio", Va);
+           ba.on("click", ".mm-draw-btn,.mm-draw-done-btn", Jc);
+           Aa.on("click", ".drag-box", function() {
+               for (var c = $(this), n = 0; n < m.length; n++)
+                   if (m[n].$box[0] === c[0] && (m[n].text || "image" === m[n].type) && !m[n].dragEnabled()) {
+                       bb(!0);
+                       break
+                   }
+           });
+           L.find(".mm-toggle-opts").click(function() {
+               var c = L.find(".mm-opts")
+                 , n = $(this);
+               "none" === c.css("display") ? (c.slideDown(200),
+               n.text("Hide Options")) : (c.slideUp(200),
+               n.text("More Options"))
+           });
+           L.on("click", "#memetab", Bc);
+           L.on("click", "#mytab", Vc);
+           L.on("click", ".im", function() {
+               kc() && !confirm("Switching templates will remove extra text and images you added. Continue?") || D.select($(this).data("key"))
+           });
+           L.on("mouseenter", ".im", function() {
+               var c = $(this).data("key");
+               c = Nc[c] || q[c].name || "Untitled Template";
+               $("#mm-meme-title").text(c).css({
+                   fontWeight: c === J().name ? 700 : 400
+               })
+           });
+           L.on("mouseleave", ".im", function() {
+               $("#mm-meme-title").text(J().name || "Untitled Template").css({
+                   fontWeight: 700
+               })
+           });
+           Qa.on("contextmenu", function() {
+               z.ilog("canvas contextmenu")
+           });
+           var l = Ea.width();
+           700 > l && bb(!1);
+           Ea.resize(debounce(function() {
+               var c = Ea.width();
+               c !== l && (l = c,
+               Y(pb.width()))
+           }))
+       }
+       ;
+       D.initPopMemes = function() {
+           Bc()
+       }
+       ;
+       var bb = D.toggleDrag = function(a) {
+           Aa.toggleClass("drag-disabled", !a);
+           a ? Aa.find(".drag-box").removeClass("off drag-top") : Aa.find(".drag-box").removeClass("drag-top");
+           for (var b = 0; b < m.length; b++)
+               m[b].toggleDrag(a);
+           L.find(".mm-toggle-drag").toggleClass("checked", a)
+       }
+       , Pb, Ab, Ha, Kc, Qc = debounce(function(a, b) {
+           var d = a.val();
+           d !== Kc && (Kc = d,
+           a.removeClass("error"),
+           d && (isValidImgUrl(d) ? (loading("Uploading image"),
+           Zb(d, function(e, f) {
+               loading(!1);
+               b.show();
+               Ha = new ImageCropper(b,b.width(),b.width());
+               Ha.setSrc(e, f);
+               $("#mm-upload-btns").removeClass("display-none");
+               Ab = d
+           })) : a.addClass("error")))
+       }, 100), nb, nc, mb = {
+           "Courier New": !0,
+           Impact: !0
+       }, tb = "Impact;Arial;Comic Sans MS;Helvetica;Times New Roman;Times;Courier New;Courier;Verdana;Georgia;Palatino;Garamond;Bookman;Trebuchet MS;Arial Black".split(";"), Rb = "Al Bayan;Al Nile;Al Tarikh;American Typewriter;Andale Mono;Apple Braille;Apple Chancery;Apple Color Emoji;Apple SD Gothic Neo;Apple Symbols;AppleGothic;AppleMyungjo;Arial Hebrew;Arial Hebrew Scholar;Arial Narrow;Arial Unicode MS;Avenir;Avenir Next;Ayuthaya;Baghdad;Bangla MN;Bangla Sangam MN;Baskerville;Beirut;Big Caslon Medium;Bodoni 72;Bodoni Ornaments;Chalkboard;Chalkboard SE;Chalkduster;Cochin;Copperplate;Corsiva Hebrew;Damascus;DecoType Naskh;Devanagari MT;Devanagari Sangam MN;Didot;Diwan Kufi;Diwan Thuluth;Euphemia UCAS;Farah;Farisi;Futura;GB18030 Bitmap;Geeza Pro;Geneva;Gill Sans;Gujarati MT;Gujarati Sangam MN;Gurmukhi MN;Gurmukhi MT;Gurmukhi Sangam MN;Heiti SC;Heiti TC;Helvetica Neue;Herculanum;Hiragino Kaku Gothic StdN;Hiragino Maru Gothic ProN;Hiragino Mincho ProN;Hiragino Sans GB;Hiragino Sans;Hoefler Text;ITF Devanagari;ITF Devanagari Marathi;InaiMathi;Kailasa;Kannada MN;Kannada Sangam MN;Kefa;Khmer MN;Khmer Sangam MN;Kohinoor Bangla;Kohinoor Devanagari;Kohinoor Telugu;Kokonor;Krungthep;KufiStandardGK;Lao MN;Lao Sangam MN;Lucida Grande;Luminari;Malayalam MN;Malayalam Sangam MN;Marker Felt;Menlo;Microsoft Sans Serif;Mishafi Gold;Mishafi;Monaco;Mshtakan;Muna;Myanmar MN;Myanmar Sangam MN;Nadeem;New Peninim MT;Noteworthy;Optima;Oriya MN;Oriya Sangam MN;PT Mono;PT Sans;PT Sans Caption;PT Sans Narrow;PT Serif;PT Serif Caption;Papyrus;Phosphate;PingFang HK;PingFang SC;PingFang TC;Plantagenet Cherokee;Raanana;STIXGeneral;STIXIntegralsD;STIXIntegralsSm;STIXIntegralsUp;STIXIntegralsUpD;STIXIntegralsUpSm;STIXNonUnicode;STIXSizeFiveSym;STIXSizeFourSym;STIXSizeOneSym;STIXSizeThreeSym;STIXSizeTwoSym;STIXVariants;STSong;Sana;Sathu;Savoye LET Plain:1.0;Shree Devanagari 714;SignPainter-HouseScript;Silom;Sinhala MN;Sinhala Sangam MN;Skia;Snell Roundhand;Songti SC;Songti TC;Sukhumvit Set;Symbol;Tahoma;Tahoma Negreta;Tamil MN;Tamil Sangam MN;Telugu MN;Telugu Sangam MN;Thonburi;Times Roman;Trattatello;Waseem;Webdings;Wingdings;Wingdings2;Wingdings3;Zapf Dingbats;Zapfino".split(";"), pc = "Andalus;Angsana New;AngsanaUPC;Aparajita;Arabic Typesetting;Batang;BatangChe;Browallia New;BrowalliaUPC;Calibri;Cambria;Cambria Math;Candara;Consolas;Constantia;Corbel;Cordia New;CordiaUPC;DaunPenh;David;DFKai-SB;DilleniaUPC;DokChampa;Dotum;DotumChe;Ebrima;Estrangelo Edessa;EucrosiaUPC;Euphemia;FangSong;Franklin Gothic Medium;FrankRuehl;FreesiaUPC;Gabriola;Gautami;Gisha;Gulim;GulimChe;Gungsuh;GungsuhChe;IrisUPC;Iskoola Pota;JasmineUPC;KaiTi;Kalinga;Kartika;Khmer UI;KodchiangUPC;Kokila;Lao UI;Latha;Leelawadee;Levenim MT;LilyUPC;Lucida Console;Lucida Sans Unicode;Malgun Gothic;Mangal;Marlett;Meiryo;Meiryo UI;Microsoft Himalaya;Microsoft JhengHei;Microsoft New Tai Lue;Microsoft PhagsPa;Microsoft Sans Serif;Microsoft Tai Le;Microsoft Uighur;Microsoft YaHei;Microsoft Yi Baiti;MingLiU;MingLiU_HKSCS;MingLiU_HKSCS-ExtB;MingLiU-ExtB;Miriam;Miriam Fixed;Mongolian Baiti;MoolBoran;MS Gothic;MS Mincho;MS PGothic;MS PMincho;MS UI Gothic;MV Boli;Narkisim;NSimSun;Nyala;Palatino Linotype;Plantagenet Cherokee;PMingLiU;PMingLiU-ExtB;Raavi;Rod;Sakkal Majalla;Segoe Print;Segoe Script;Segoe UI;Segoe UI Light;Segoe UI Semibold;Segoe UI Symbol;Shonar Bangla;Shruti;SimHei;Simplified Arabic;Simplified Arabic Fixed;SimSun;SimSun-ExtB;Sylfaen;Symbol;Tahoma;Traditional Arabic;Tunga;Utsaah;Vani;Vijaya;Vrinda;Webdings;Wingdings".split(";"), Tb = [], Ya = [], Ub = !0, Cb = !1, sc = {};
+       D.addText = ub;
+       var U = debounce(vb, 100, !1, 100, !0);
+       D.preview = U;
+       D.previewInstantly = vb;
+       Fb.prototype.init = function(a) {
+           this.$edit = a;
+           this.opacity = 1;
+this.$box = $("
+", {
+               "class": "drag-box off"
+           })
+       }
+       ;
+       Fb.prototype.initEditSettings = function() {
+           var a = this;
+           new Slider(this.$edit.find(".mm-box-opacity"),this.$edit.find(".mm-box-opacity-slider"),0,{
+               min: 0,
+               max: 1,
+               step: .01,
+               val: 1,
+               update: function(d) {
+                   a.opacity = d;
+                   U()
+               }
+           });
+           this.$edit.on("change", ".mm-box-opacity", function() {
+               a.opacity = Math.min(1, Math.max(0, $(this).val()));
+               U()
+           });
+           var b = function() {
+               Aa.find(".drag-box").removeClass("off").removeClass("drag-top");
+               a.$box.addClass("drag-top")
+           };
+           this.$box.on("vmousedown", function() {
+               b();
+               a.$box.attr("tabindex", 0).focus()
+           });
+           this.$edit.on("click", ".mm-box-bring-top-btn", b)
+       }
+       ;
+       inherits(tc, Fb);
+       inherits(wc, Fb);
+       var Jc = D.toggleDraw = function() {
+           pb.find(".mm-top-panel").toggleClass("display-none", !ib);
+           qb.toggleClass("display-none", ib);
+           Aa.toggleClass("mm-drawing", !ib);
+           if (ib)
+               Qa.off("vmousedown", xc);
+           else
+               Qa.on("vmousedown", xc);
+           ib = !ib
+       }
+       , Cc = !1, Vb = {}, hb = {}, Dc, Zc = D.showAddImagePopup = function(a, b, d) {
+           function e() {
+               return c.find(".mm-add-img-show-nsfw").hasClass("checked")
+           }
+           function f() {
+               return c.find(".mm-add-img-transparent-only").hasClass("checked")
+           }
+           function g(u, w, F, X, V) {
+               var la = sa(J())
+                 , ca = new Image
+                 , N = new Image;
+               "http" === la.substr(0, 4) && ca.setAttribute("crossorigin", "anonymous");
+               "http" === u.substr(0, 4) && N.setAttribute("crossorigin", "anonymous");
+               var Oa = V.hasClass("mm-add-img-type-below")
+                 , db = V.hasClass("mm-add-img-type-above")
+                 , va = V.hasClass("mm-add-img-type-left")
+                 , eb = !1;
+               V = function() {
+                   if (eb) {
+                       var K = S.createElement("canvas")
+                         , qa = K.getContext("2d");
+                       if (Oa || db) {
+                           var G = Math.max(ca.width, N.width)
+                             , wa = G / ca.width * ca.height;
+                           var Pa = G / N.width * N.height;
+                           var xa = G / ca.width;
+                           K.width = G;
+                           K.height = wa + Pa;
+                           qa.drawImage(ca, 0, 0, ca.width, ca.height, 0, Oa ? 0 : Pa, G, wa);
+                           qa.drawImage(N, 0, 0, N.width, N.height, 0, Oa ? wa : 0, G, Pa)
+                       } else {
+                           G = Math.max(ca.height, N.height);
+                           wa = G / ca.height * ca.width;
+                           var da = G / N.height * N.width;
+                           xa = G / ca.height;
+                           K.width = wa + da;
+                           K.height = G;
+                           qa.drawImage(ca, 0, 0, ca.width, ca.height, va ? da : 0, 0, wa, G);
+                           qa.drawImage(N, 0, 0, N.width, N.height, va ? 0 : wa, 0, da, G)
+                       }
+                       var $a = new Image;
+                       $($a).load(function() {
+                           var ya = J().templates || [{
+                               id: J().id,
+                               url: J().template_url
+                           }]
+                             , Da = {
+                               id: w,
+                               url: X,
+                               display_name: F
+                           };
+                           db || va ? ya.unshift(Da) : ya.push(Da);
+                           q.custom = {
+                               id: 0,
+                               templates: ya,
+                               name: "Custom Image",
+                               img: $a,
+                               w: $a.width,
+                               h: $a.height
+                           };
+                           ya = [];
+                           for (Da = 0; Da < m.length; Da++) {
+                               var ea = m[Da].getVals();
+                               1 < xa && (ea.x = Math.round(ea.x * xa),
+                               ea.y = Math.round(ea.y * xa),
+                               ea.w = Math.round(ea.w * xa),
+                               ea.h = Math.round(ea.h * xa));
+                               db ? ea.y += Pa : va && (ea.x += da);
+                               ya.push(ea)
+                           }
+                           D.select("custom", !1);
+                           for (Da = 0; Da < ya.length; Da++)
+                               ea = ya[Da],
+                               m[Da].setVals(ea.x, ea.y, ea.w, ea.h, ea.rotation);
+                           L.find(".mm-toggle-drag").hasClass("checked") || bb(!0);
+                           loading(!1)
+                       });
+                       Lb(K, $a)
+                   } else
+                       eb = !0
+               }
+               ;
+               $(ca).load(V);
+               $(N).load(V);
+               ca.src = la;
+               N.src = u
+           }
+           function h(u, w) {
+               if (0 !== u.type.indexOf("image"))
+                   error_dialog("That file is not an image!");
+               else {
+                   var F = new FileReader;
+                   F.onload = function(X) {
+                       t.show();
+                       M = new ImageCropper(t,t.width(),t.width());
+                       M.setSrc(X.target.result, u.name);
+                       c.find(".mm-add-img-btns,.mm-add-img-submit,.mm-add-img-public-wrap").removeClass("display-none");
+                       c.find(".mm-add-img-search-wrap,.mm-quick-imgs").hide();
+                       P = (w ? "paste:" : "") + u.name
+                   }
+                   ;
+                   F.readAsDataURL(u)
+               }
+           }
+           function k(u) {
+               loading("Loading template");
+               var w = sa(u);
+               "/" === w[0] && (w = location.protocol + "//" + location.host + w);
+               Zb(w, function(F) {
+                   loading(!1);
+                   t.show();
+                   M = new ImageCropper(t,t.width(),t.width());
+                   M.setSrc(F, u.name, u.id);
+                   c.find(".mm-add-img-btns,.mm-add-img-submit").removeClass("display-none")
+               })
+           }
+           function l() {
+               if (proType())
+                   return !0;
+               I.done ? z.showProPopup ? showProPopup("You can use premium images and much more with Imgflip Pro!", currentMediaSource() + "_pro_img") : kb("Pro Img", "You can use premium images with Imgflip Pro Basic") : error_dialog("Page is not finished loading yet. Try again in a few seconds or refresh.");
+               return !1
+           }
+           b = b || Xb;
+           d = !1 !== d;
+a = '
+Inside
+'); a += '
+'; a += "
+"; a += '
+'; a += '
+Below
+'; a += '
+'; a += "
+"; a += '
+More
+'; a += '
+'; a += '
+Above
+'; a += '
+'; a += "
+"; a += '
+'; a += '
+Left
+'; a += '
+'; a += "
+"; a += '
+'; a += '
+Right
+'; a += '
+'; a += "
+"; a += "
+"; d && (a += '
+',
+           a += Fc(y, 0, y.length),
+           a += '<button type="button" class="mm-quick-img-more-btn a">More</button>',
+a += '
+', a += "
+"); a += '
+'; a += '
+Upload Image<input type="file" class="hidden-file-input"/>
+';
+           a += '<input class="mm-add-img-url" type="url" placeholder="Paste image URL"/>';
+a += '
+';
+           a += '<button type="button" class="mm-add-img-rotate l but sml">' + ROTATE_SVG + "</button>";
+           a += '<button type="button" class="mm-add-img-flip l but sml">flip</button>';
+a += "
+"; a += '
+'; a += '
+' + cb("Allow this image to be shared publicly", !1, {
+               className: "mm-add-img-public"
+}) + '
+Name <input class="mm-add-img-name" type="text" maxlength="64" placeholder="e.g. Funny Hat"/>Alternate Names (comma-separated) <input class="mm-add-img-alt-names" type="text" maxlength="255" placeholder="e.g. Silly Hat, Weird Top Hat"/>Description <textarea class="mm-add-img-description" maxlength="512" placeholder="e.g. more info about this image and how it could be used"></textarea>' + (I.user.id ? cb("Anonymous (not shown with your username)", !1, {
+               className: "mm-add-img-anon"
+}) : "") + "
+";
+           a += '<button type="button" class="mm-add-img-submit b but display-none">Add Image</button>';
+a += '
+'; a += '
+OR
+';
+           a += '<input class="mm-add-img-search" type="text" placeholder="Search Memes"/>';
+a += '
+';
+           a += cb("Include NSFW", !1, {
+               className: "mm-add-img-show-nsfw",
+               title: "Include not-safe-for-work templates"
+           });
+           a += cb("Transparent Background", d, {
+               className: "mm-add-img-transparent-only",
+               title: "Only show templates containing transparency"
+           });
+a += "
+"; a += '
+'; a += '
+loading...
+'; a += '
+'; a += "
+"; a += "
+"; a += "
+"; a += "
+";
+           var c = $(a), n = c.find(".mm-add-img-search"), p = c.find(".mm-search-results"), t = c.find(".mm-add-img-preview-wrap"), E = new Box({
+               html: c,
+               w: 360
+           }), M, P, Q, r = debounce(function(u) {
+               var w = u.val();
+               w !== Q && (Q = w,
+               u.removeClass("error"),
+               w && (isValidImgUrl(w) ? (loading("Uploading image"),
+               Zb(w, function(F, X) {
+                   loading(!1);
+                   t.show();
+                   M = new ImageCropper(t,t.width(),t.width());
+                   M.setSrc(F, X, 0, w);
+                   c.find(".mm-add-img-btns,.mm-add-img-submit,.mm-add-img-public-wrap").removeClass("display-none");
+                   c.find(".mm-add-img-search-wrap,.mm-quick-imgs").hide();
+                   P = w
+               })) : u.addClass("error")))
+           }, 100);
+           c.on("vclick", ".mm-add-img-type", function(u) {
+               var w = $(this);
+               w.parent().find(".mm-add-img-type").removeClass("selected");
+               w.addClass("selected");
+               w = w.hasClass("mm-add-img-type-inside");
+               c.find(".mm-quick-imgs").toggle(w);
+               var F = c.find(".mm-add-img-transparent-only");
+               F.toggleClass("checked", w);
+               p.hasClass("mm-hidden") || F.change();
+               return cancelEvent(u)
+           });
+           c.on("vclick", ".mm-add-img-type-more", function() {
+               $(".mm-add-img-types").toggleClass("concise");
+               var u = $(this)
+                 , w = u.data("swap");
+               u.data("swap", u.text());
+               u.text(w)
+           });
+           c.on("change", ".mm-add-img-show-nsfw", function() {
+               $(this).hasClass("checked") ? (Gc || confirm("This will allow any user-uploaded meme template to display in the search results, which may contain not-safe-for-work content. Are you sure you want to include NSFW templates?") ? gb(n, p, e(), f(), !0, !1, !1, "add") : $(this).removeClass("checked"),
+               Gc = !0) : gb(n, p, e(), f(), !0, !1, !1, "add")
+           });
+           c.on("change", ".mm-add-img-transparent-only", function() {
+               gb(n, p, e(), f(), !0, !1, !1, "add")
+           });
+           var v = !0;
+           c.on("keyup change paste focus", ".mm-add-img-search", debounce(function() {
+               gb(n, p, e(), f(), !1, !1, !1, "add");
+               v && (c.find(".mm-add-img-search-opts").removeClass("hidden"),
+               v = !1)
+           }, 300));
+           c.on("vclick", ".mm-search-result", function(u) {
+               var w = $(this).data("id");
+               if (w) {
+                   if (+hb[w].pro_only && !l())
+                       return cancelEvent(u);
+                   Kb(w, "add_image_click", p);
+                   k(hb[w]);
+                   return cancelEvent(u)
+               }
+           });
+           c.on("change", ".mm-add-img-upload-btn input", function() {
+               Mc ? this.files[0] && h(this.files[0]) : error_dialog("Your browser must have HTML5 File support to upload an image. Try upgrading to a modern browser.")
+           });
+           c.on("keyup change paste", ".mm-add-img-url", function(u) {
+               var w = (u.originalEvent || u).clipboardData;
+               if (w && w.items) {
+                   w = w.items;
+                   for (var F = 0; F < w.length; F++)
+                       if (0 === w[F].type.indexOf("image")) {
+                           var X = w[F].getAsFile();
+                           if (X)
+                               return h(X, !0),
+                               cancelEvent(u)
+                       }
+               }
+               r($(this))
+           });
+           c.on("click", ".mm-add-img-submit", function() {
+               var u = function() {
+                   var w = M.getFinalDataUrl("image/png")
+                     , F = M.getTemplateId()
+                     , X = M.getFilename()
+                     , V = M.getOriginalUrl();
+                   loading("Adding image");
+                   c.find(".mm-add-img-type-inside").hasClass("selected") ? b(w, X, !1, F) : g(w, F, X, V, c.find(".mm-add-img-type.selected"));
+                   E.hide()
+               };
+               c.find(".mm-add-img-public").hasClass("checked") ? (loading("Uploading new image"),
+               $.ajax({
+                   url: "/ajax_upload_template",
+                   type: "post",
+                   dataType: "json",
+                   data: {
+                       img_data: M.getFinalDataUrl("image/png"),
+                       template_url: P,
+                       template_name: c.find(".mm-add-img-name").val(),
+                       template_alt_names: c.find(".mm-add-img-alt-names").val(),
+                       template_description: c.find(".mm-add-img-description").val(),
+                       template_anon: c.find(".mm-add-img-anon").hasClass("checked") ? 1 : 0
+                   },
+                   success: function(w) {
+                       w.error ? (loading(!1),
+                       error_dialog(w.error)) : (M.setTemplateId(w.id),
+                       u())
+                   }
+               })) : u()
+           });
+           c.on("click", ".mm-add-img-rotate", function() {
+               M.rotateClockwise()
+           });
+           c.on("click", ".mm-add-img-flip", function() {
+               M.flipHorizontal()
+           });
+           c.on("click", ".mm-quick-img-wrap", function() {
+               if (!$(this).data("pro_only") || l())
+                   E.hide(),
+                   loading("Adding Image"),
+                   Xb($(this).find("img").attr("src").replace("/4/", "/"), $(this).data("name"), !0, $(this).data("id"))
+           });
+           c.on("click", ".mm-quick-img-more-btn", function() {
+               var u = c.find(".mm-quick-imgs-more")
+                 , w = u.hasClass("display-none");
+               if (w) {
+                   if (!u.children().length) {
+var F = '
+Popular User Uploads
+' + Fc(B, 0, B.length);
+                       u.html(F)
+                   }
+                   u.removeClass("display-none")
+               } else
+                   u.addClass("display-none");
+               $(this).text(w ? "Less" : "More")
+           });
+           c.on("change", ".mm-add-img-public", function() {
+               c.find(".mm-add-img-public-settings").toggle($(this).hasClass("checked"))
+           })
+       }
+   }
+   ;
+   var $b, ac, kb = z.showProBasicPopup = function(q, y) {
+       $b = $b || $.getScript("https://checkout.stripe.com/checkout.js");
+       ac = ac || $.getScript("https://js.stripe.com/v3/");
+       var B = $("#pro-basic-popup-wrap").html();
+B = '
+' + (y || "") + "
+" + B + '
+<button type="button" class="pro-popup-back-btn a">← Back to Pro Basic</button>';
+       B += $("#pro-popup-wrap").html();
+B += "
+";
+       var C = BOX.show({
+           html: B
+       });
+       $.when($b, ac).done(function() {
+           initProStripe(C.el().find(".pro-basic-popup"), "pro_basic");
+           initProStripe(C.el().find(".pro-popup"), "pro")
+       });
+       C.el().on("click", ".pro-popup-back-btn", function() {
+           C.el().find(".pro-basic-popup,.pro-popup").toggleClass("display-none");
+           proEvent("pro_basic", "Switch back from pro");
+           C.recenter()
+       });
+       C.el().on("click", ".pro-basic-popup-pro-btn", function() {
+           C.el().find(".pro-basic-popup,.pro-popup").toggleClass("display-none");
+           proEvent("pro", "Switch from pro basic");
+           C.recenter()
+       });
+       proEvent("pro_basic", "Clicked " + q)
+   }
+   , Zb = z.getDataUrlFromImgUrl = function(q, y) {
+       var B = new Image;
+       B.setAttribute("crossorigin", "anonymous");
+       var C = "";
+       z.URL && (C = ((new URL(q)).pathname || "/").substr(1));
+       $(B).load(function() {
+           var Y = S.createElement("canvas");
+           Y.width = this.naturalWidth;
+           Y.height = this.naturalHeight;
+           Y.getContext("2d").drawImage(this, 0, 0);
+           try {
+               y(Y.toDataURL("image/png"), C)
+           } catch (ma) {
+               dc(q, y, C)
+           }
+       }).on("error", function() {
+           dc(q, y, C)
+       });
+       B.src = q
+   }
+   ;
+   z.ColorPicker = jb;
+   var Yc = z.containsTransparency = function(q) {
+       var y = q.width
+         , B = q.height;
+       q = q.getContext("2d");
+       if (!q.getImageData)
+           return !1;
+       q = q.getImageData(0, 0, y, B).data;
+       for (var C = 0, Y = 0; 1E3 > Y; Y++)
+           if (255 > q[(Math.random() * B >> 0) * y * 4 + 4 * (Math.random() * y >> 0) + 3] && (C++,
+           .01 < C / 1E3))
+               return !0;
+       return !1
+   }
+     , Nb = !1;
+   z.generate = Mb;
+   z.imgDonePopup = fc;
+   z.imgDone = gc;
+   var bc = z.memes && z.memes[z.initMeme] ? z.memes[z.initMeme].id : 0
+     , cc = {};
+   z.ajaxUpdateRecommendedMemes = function(q) {
+       q && q.id && q.id !== bc && (bc = q.id,
+       cc[q.id] ? $("#mm-recs-wrap").html(cc[q.id]) : $.ajax({
+           url: "/ajax_get_meme_recs",
+           data: {
+               meme_id: q.id
+           },
+           success: function(y) {
+               y.error || (cc[y.meme_id] = y.html,
+               +y.meme_id === +bc && $("#mm-recs-wrap").html(y.html))
+           }
+       }))
+   }
+   ;
+   memeInit = function() {
+       $(".mm-generate").click(function() {
+           Mb(Lc, !1, !0)
+       });
+       Ua.on("click", ".mm-set-default-settings", function() {
+           mm.ajaxSetDefaultSettings()
+       });
+       Ua.on("click", ".mm-show-pro-basic", function() {
+           kb("FAQ", "You can remove the imgflip.com watermark with Imgflip Pro Basic!")
+       });
+       if ("#imgUrl=" === location.hash.substr(0, 8)) {
+           var q = location.hash.substr(8).split("&")[0];
+           q && ($("#mm-show-upload").click(),
+           $("#mm-upload-url").val(decodeURIComponent(q)).change(),
+           history.replaceState(null, S.title, location.href.split("#")[0]))
+       }
+       $w.on("beforeunload", function() {
+           return $("#done")[0] || mm.isEmpty() ? oa : !0
+       });
+       !proType() && z.sfw && ($(".head").prepend(adCode("ad", "leaderboard_atf")),
+       $(".gen-bottom-ad").append(adCode("", "leaderboard_btf")))
+   }
+   ;
+   showGenerator = function(q) {
+       if (!I.user.id)
+           showLogin();
+       else if (!q.data("meme-iid") || confirm("You already have a meme attached to this comment, are you sure you want to overwrite it?"))
+           loading("Materializing Meme Generator"),
+           $.ajax({
+               dataType: "json",
+               url: "/ajax_get_meme_generator",
+               success: function(y) {
+                   loading(!1);
+                   if (y.error)
+                       error_dialog(y.error);
+                   else {
+                       var B = BOX.show({
+                           html: y.html,
+                           bg: "transparent",
+                           noMaskClick: !0
+                       });
+                       mm = new MemeMaker(y.memes,y.quick_add_imgs,y.quick_trans_imgs,{
+                           allowBoxRotation: !0,
+                           numTexts: 2
+                       });
+                       mm.init();
+                       mm.initPopMemes();
+                       mm.select(0);
+                       proType() || $(".gen-no-watermark-wrap").hide();
+                       B.el().on("click", ".mm-generate", function() {
+                           loading("Generating Meme");
+                           Mb(function(C) {
+                               q.find(".c-pending-img").remove();
+                               q.data("meme-iid", C.iid).addClass("has-pending-img").prepend('<img class="c-pending-img" src="' + IMAGE_DOMAIN + (+C.iid).toString(36) + '.jpg"/>');
+                               loading(!1);
+                               B.hide()
+                           }, !0)
+                       })
+                   }
+               }
+           })
+   }
+} )(window, document, $(window), $(document));
+
+Data keys:
+
+33acrossId_csti 6000371552980511:6158203196586298:6158203196586298:0 BT_AA_DETECTION {"ab":false,"acceptable":true} PageOS_Environment {"vendor":"Google Inc. (Intel)","renderer":"ANGLE (Intel, Intel(R) UHD Graphics (0x00009A78) Direct3D11 vs_5_0 ps_5_0, D3D11)"} PageOS_Kinesis [] PageOS_Session {"UUID":"session_e504cc9f-9cd5-4995-aefd-f2d18e0ea03a_1728683432206","firstVisit":1728683432206,"pageNumber":4,"lastVisit":1728683543210,"cookieSyncUUID":"user_940f2220-64f1-48f1-9117-660c8459be6c_1713147625634"} TAPAD {"id":"32f987ae-7432-41cb-a926-5589bf4d0691"} _GESPSK-esp.criteo.com ["esp.criteo.com","ONMVc18lMkZYWW1PTU5zWGxUZHAwTEdKOHZCMDNldGdsTHMwTmVpSk1Vb2llT1Q0eCUyQjFFRkMza2lYblYlMkYyVms5dUJPOSUyQm56NEYwY3pxVzFsOGQ5dVNPVkNTWVVMbkxxT1JhcFhzWlplJTJGVGdrcExhYXF0dldzSnVpaTR6cnlDeWc3OWxHbHlvd0FtNzRvV3pJMVpJbTVuZ0FNWVpWc2hyRnloVTByZElCUFkwNWJybE13YkVhVzlTWW50NUduJTJCZXFPZXduVVpEbXJVek53MHI2SkxwNjJFQWZyWTVlVnowQVNhako3dWxlbXFIVVRsJTJGQnJjQjlqYkplS0JOJTJGYUYlMkJheWM0bnVTdjFCbURkdVBWbWtGJTJGJTJCZnM4VFVDZ1ZGRXJOcXJFekwlMkZuRVdWWDN6TVpBbUJpVCUyQnIzUDlKUVlvWTVlVjZDdjhy",1728683467135,null,null,null,null,null,0,[108]] _GESPSK-openx ["openx",null,1728683467133,null,null,null,null,null,0,[111]] _GESPSK-rtbhouse ["rtbhouse",null,1728427028140,null,null,null,null,null,null,[106]] __amuidpb 9cdd78e5-30f2-4d3d-b21e-f755b5dee89e __qca {"value":"P0-1795800210-1714597103857","expiry":1748465904646} _acsynt 1719970321258 _cc_id 43a4e8476e1017b4e77435fe817da59f _cc_id_update_ts 1728506133142 _iiq_fdata {"pcid":"7940ae9f-950e-4618-ac5f-0bf15e7ee469","pcidDate":1713147626564} _lc2_fpi 9099df4a8854--01j18j44va5ne470j1q8pbbvnm _lc2_fpi_meta {"w":1719348106090} _li_duid 9099df4a8854--01j18j44va5ne470j1q8pbbvnm _li_pbid %7B%22nonId%22%3A%227-cN92IO%2Bb0siaF%2FlX3c52eFWwFvvJmBAEhR97f4iWUr4Fd7aw1Pdh4bmswuI%2Bew5YkNIG79HthTIar4d3c8sOuJqbXiXb4gmyy4raAu1Nr6mCqg%3D%3D%22%2C%22bidswitch%22%3A%2233be2ca0-7914-4451-8fb1-46203d3fdf71%22%2C%22openx%22%3A%22bf051872-ae0b-4c17-a91e-9bab0ef665a4%22%2C%22magnite%22%3A%22M1V1PNE9-6-4HXG%22%2C%22pubmatic%22%3A%22B8FE06C4-3AA7-43D4-BC3B-FE263E854F04%22%2C%22uid2%22%3A%22A4AAAAye5YgKnir83T_IPTk0ZvvoxCGVe0nve0Gau7sPFWcnppNyRluV-kw-QyFAGpzMEdq2PGdNViRsNZ1tvWEGSgz1C1L2I3yFe4wkffIHcnGaRE0IMPL7jw0AlEZQEABItZgtnR-1PiiRuW3Qe8konue9mg7Y9YlA4jseOJmMXuFWsNXvDVqNYOqh-PMskjdYBWeLCmoHQTaSP6tgElfJMw%22%2C%22index%22%3A%22YwhHLDaqeSreJnpGtm.u.gAA%263346%22%7D _li_pbid_cst zix7LPQsHA== _li_pbid_exp Sat, 12 Oct 2024 21:52:26 GMT _pubcid c87c8527-b7af-4bbe-8301-6616bd9f35a3 _pubcid_exp Sat, 11 Oct 2025 21:52:23 GMT _pw_audience_categories ["humor_and_satire","entertainment"] _pw_audience_impression_event_ids ["6471242578","6330970947","5979980314","6333738437","6471133153","6144057514","5978715291","5979984418","6333771962","6333768641","5979149254","5980016299","5979138652","6471754073","5979771356","6471250705","6468946461","6471132196","5977843332","5979120715","5978726802","5977852941","5980144966","5980670357","6471775580","6471236878","6471276604","6469010526","5980651589","6330973809","6469041024","5980004377","6330986373","6144994505","6330985656","6333777104","5980124602","6330971949","6471749753","5978850414","6144061147","6469008633","6469157277","6471391819","6333151330","6471760715","6469205739","5978713350","6469009374","6471239185","6471888635","5978699208","6471132166","5978713437","5978702346","5979133570","6471758525","5979784271","5979981529","5979144238","5978729889","6471906869","5980641530","6333765089","5978722926","5980667969","5979768122","5979120652","5980647323","5979998053","6468913641","6333160450","5978697327","5979774866","5977835499","6330970539","614269479… _pw_pwheid_segment_ids ["248","11","18","25","109","106","29","206","17","5","20","65","68","82","85","80","194","10","30","73","104","202","34","3","84","36","119","269","61","99","135","24","60","86","93","287","103","62","95","197","83","13","33","55","44","300","57","63","53","90","58","69","8","15","54","56","136","296","137","297","22","23","31","78","113","126","87","155","152","92","275","28","295","66","7"] _pw_pwheid_segment_ids_purged true amuid2_4 1719970321489 apcdpfp b370f17d85d3d4485a84eadb638534ca986ef481 aps:bd056b42-51db-43ce-9a8e-3b11319b5d1f:deviceSignal/sua {"architecture":"x86","bitness":"64","mobile":0,"model":"","source":2,"platform":{"brand":"Windows","version":["10","0","0"]},"browsers":[{"brand":"Google Chrome","version":["129","0","6668","90"]},{"brand":"Not=A?Brand","version":["8","0","0","0"]},{"brand":"Chromium","version":["129","0","6668","90"]}]} apstagCxMEnabled 1 au/1d {"v":"AU1D-0100-001723660725-F5LPI3FO-BNVZ","e":0} au/last_seen_pixels {"v":{"apn":1728670098,"ttd":1728670098,"pub":1728670098,"rub":1728670098,"tapad":1728670098,"adx":1728670098,"goo":1728670098,"son":1728670166,"onetag":1728670098,"openx":1728670166,"ado":1728670098,"colossus":1728670166,"unruly":1728670166,"impr":1728670166,"index":1728670166,"ppnt":1728670166,"amo":1728670166,"smart":1728670098},"e":0} au/sid {"v":"AU1S-0100-001728683459-1JPXBTAE-NXCC","e":1728685343992} au/tid {"v":"eeabdca4c76ef2d67766d84ad0ab35bb","e":1728687143992} auHadronId 060ixe7j2g5aaa76kcabk9c7b8bdhcglcc6uom2wsqyeee20yiegy6i2g4gksiq0i auHaloId 060ixe7j2g5aaa76kcabk9c7b8bdhcglcc6uom2wsqyeee20yiegy6i2g4gksiq0i btUserCountry US btUserCountryExpiry 1728683731223 btUserIsFromRestrictedCountry false carbon_ccuid b301ab78-038a-4ab3-89fc-331b57be38df ccContextualData ["440"] cc_landing_url https://imgflip.com/gif-maker colors_used {"#a60000":{"name":"#a60000","last_used":1715896683837},"#960000":{"name":"#960000","last_used":1716772828413},"#240096":{"name":"#240096","last_used":1716772835289},"#91c1b8":{"name":"#91c1b8","last_used":1716775366851},"#6c6c6c":{"name":"#6c6c6c","last_used":1717035244229},"#de0000":{"name":"#de0000","last_used":1716857874783},"#070707":{"name":"#070707","last_used":1717036354442},"#5b5b5b":{"name":"#5b5b5b","last_used":1728065017846},"#d7d7d7":{"name":"#d7d7d7","last_used":1728501752533},"#b9b9b9":{"name":"#b9b9b9","last_used":1728501765152},"#f2f2f2":{"name":"#f2f2f2","last_used":1728501778362},"#464646":{"name":"#464646","last_used":1728502118080},"#303030":{"name":"#303030","last_used":1728502167623},"#555a5e":{"name":"#555a5e","last_used":1728502148297},"#545454":{"name":"#545454","last_used":1728502163515},"#454545":{"name":"#454545","last_used":1728502173168},"#161616":{"name":"#161616","last_used":1728502196917},"#515151":{"name":"#515151","last_used":1728502246975},"#1b1d1e… criteo_fast_bid // Hash: w/TkdxH3ngIYRYhFgcupRSsr6ELc+lNjBueuJy4uOwfTL57079ulPKvMMvnSDG0IsYk1R6eq8EOsIIRoGbb+T1W4aL+cnKPrjanLTJPHHQVpLsJjHotQraOXFw4P1o001PNpXDxieXNfaPJlhleqwthEprx73/JzuybOunsQwbw= !function(F){"use strict";var i=function(e,t){return(i=Object.setPrototypeOf||({__proto__:[]}instanceof Array?function(e,t){e.__proto__=t}:function(e,t){for(var n in t)t.hasOwnProperty(n)&&(e[n]=t[n])}))(e,t)};function t(e,t){function n(){this.constructor=e}i(e,t),e.prototype=null===t?Object.create(t):(n.prototype=t.prototype,new n)}var w=function(){return(w=Object.assign||function(e){for(var t,n=1,i=arguments.length;n<i;n++)for(var o in t=arguments[n])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e}).apply(this,arguments)};function L(e,t){for(i in e)Object.prototype.hasOwnProperty.call(e,i)&&t.indexOf(i)<0&&(i,e[i]);if(null!=e&&"function"==typeof Object.getOwnPropertySymbols)for(var n=0,i=Object.getOwnPropertySymbols(e);n<i.length;n++)t.indexOf(i[n])<0&&Object.prototype.propertyIsEnumerabl… criteo_fast_bid_expires 1727223399350 cto_bundle ms9pUF8lMkZYWW1PTU5zWGxUZHAwTEdKOHZCMCUyRnhuYVpjdFVUd1NuRlBWaVdNaGtHU29OcmNDbnlBUlFhMTFxTEh3YXpHejI2UCUyQlJCOTBMSllITks1cU4wWkYxN2puS2lEOXdxb1dvM1dyTmJHS2lSWGM3NEUwYVpDMmlyNklTWjM3UHclMkYxUGxmOTE5eUJNc2RGVk4wN0YyYnlrZlhMOXkyb2lwbzFtTkZmZmhlRHR5dENRJTJGdzRQTnElMkZVOUxMYVhZSjUlMkZmWXclMkZtZHBmMWglMkIlMkJSblVZMG16JTJGcm5EVGowc0JHWXkxZTNLczAxbEFEeFJINm5LZkZMekhHcGJBU3A3VXNKSTBtT3olMkIwYTNDeUdHbCUyRmZuRFZkaG40aiUyQk1ZJTJCQjZKNVlpT2lKNnYwWllnWEJEQ2ZoSDZrQm1MVzBKa1NDJTJGQzZGZCUyRkU fonts_used {"Lato":{"name":"Lato","src":"https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHvxk6XweuBCY.ttf","last_used":1720059103466}} gads_privacy_sandbox_tcf_hash 3130860502 goog:cached:topics [null,1728157124709,3] id5id %7B%22created_at%22%3A%222024-10-11T21%3A52%3A28.429616691Z%22%2C%22id5_consent%22%3Afalse%2C%22original_uid%22%3A%220%22%2C%22universal_uid%22%3A%220%22%2C%22link_type%22%3A0%2C%22cascade_needed%22%3Afalse%2C%22privacy%22%3A%7B%22jurisdiction%22%3A%22other%22%2C%22id5_consent%22%3Afalse%7D%2C%22ext%22%3A%7B%22linkType%22%3A0%2C%22pba%22%3A%22LorMjk5ylSXGjDE97sORGQ%3D%3D%22%7D%7D id5id_123_nb 17 id5id_123_nb_exp Thu, 07 Nov 2024 22:37:13 GMT id5id_483_nb 0 id5id_483_nb_exp Sun, 10 Nov 2024 21:52:26 GMT id5id_cached_consent_data 8113228757666803 id5id_cached_consent_data_exp Sun, 10 Nov 2024 21:52:24 GMT id5id_cst zix7LPQsHA== id5id_exp Thu, 09 Jan 2025 21:52:26 GMT id5id_extensions {"data":{"lbCDN":"%%LB_CDN%%","lb":"ywNc8RGQTqJX1Fu5RM7VKw==","ttl":28800,"bounce":{"setCookie":false}},"expireAt":1728698898867} id5id_last Fri, 11 Oct 2024 21:52:26 GMT id5id_last_exp Thu, 09 Jan 2025 21:52:24 GMT id5id_privacy {"jurisdiction":"other","id5_consent":false} id5id_privacy_exp Sun, 10 Nov 2024 21:52:26 GMT id5id_v2_5652460284703614 {"data":{"response":{"created_at":"2024-10-11T21:52:26.475853712Z","id5_consent":false,"original_uid":"0","universal_uid":"0","link_type":0,"cascade_needed":false,"privacy":{"jurisdiction":"other","id5_consent":false},"ext":{"linkType":0,"pba":"Q4faL3AMMKvVsLdUU92nUA=="}},"responseTimestamp":1728683544838},"expireAt":1729979544839} id5id_v2_768495442833365 {"data":{"response":{"created_at":"2024-10-09T21:10:16.369371367Z","id5_consent":false,"original_uid":"0","universal_uid":"0","link_type":0,"cascade_needed":false,"privacy":{"jurisdiction":"other","id5_consent":false},"ext":{"linkType":0,"pba":"pcXfqLOMeO9cR6Qotbq7dg=="}},"responseTimestamp":1728508215378},"expireAt":1729804215385} ix_features {"expiry":1728687144809,"features":{"pbjs_allow_all_eids":{"activated":true},"pbjs_enable_multiformat":{"activated":false}}} loglevel WARN onetag_sid _cDCvfuHM9rBHZ2L1rCEm91cj3bqAwc32mMeT2OqPeQ panoramaId 5da698cdc68786e2b7315246b56616d5393800c863476ee2db2c873d5e65bf1f panoramaIdType panoIndiv panoramaIdType_exp 1729110934148 panoramaId_exp 1729110934148 panoramaId_expiry 1729110934148 panoramaId_expiry_exp 1729110934148 pbjs_fabrickId %7B%22fabrickId%22%3A%22E1%3A4M4zCOameKVIltWveYWGeUbzKrui1RwfOn2aEVyAQnofipdV0I1R_Y_XKuCL9QmlfaPuvXJKI0yY7avl6f4RgbKBImpQLkiHQko06dhJ1kUi5TvLJU5fnwZSGb2rsCql%22%7D pbjs_fabrickId_cst zix7LPQsHA== pbjs_fabrickId_exp Fri, 18 Oct 2024 21:52:26 GMT prebid:topics [["pubmatic",{"5":{"ext":{"segtax":601,"segclass":"5"},"segment":[{"id":"186"},{"id":"439"},{"id":"498"}],"name":"ads.pubmatic.com"},"lastUpdated":1728683544807}],["openx",{"5":{"ext":{"segtax":601,"segclass":"5"},"segment":[{"id":"439"},{"id":"498"}],"name":"pa.openx.net"},"lastUpdated":1728683545066}],["rtbhouse",{"5":{"ext":{"segtax":601,"segclass":"5"},"segment":[{"id":"140"},{"id":"144"}],"name":"topics.authorizedvault.com"},"lastUpdated":1720665858901}],["improvedigital",{"5":{"ext":{"segtax":601,"segclass":"5"},"segment":[{"id":"140"},{"id":"144"}],"name":"360yield.com"},"lastUpdated":1720665858896}]] pw_lotame_cookie_exp 1729203041863 pw_units_refreshes {"sessionId":"session_e504cc9f-9cd5-4995-aefd-f2d18e0ea03a_1728683432206","leaderboard_atf":3} pw_uuid_segment_ids ["248","11","18","25","109","106","29","206","17","5","20","65","68","82","85","80","194","10","30","73","104","202","34","3","84","36","119","269","61","99","135","24","60","86","93","287","103","62","95","197","83","13","33","55","44","300","57","63","53","90","58","69","8","15","54","56","136","296","137","297","22","23","31","78","113","126","87","155","152","92","275","28","295","66","7"] rudder.5e03f600-6e8a-4c9e-867b-ef9cdcfebd35.ack 1717206688545 rudder.5e03f600-6e8a-4c9e-867b-ef9cdcfebd35.inProgress {} rudder.5e03f600-6e8a-4c9e-867b-ef9cdcfebd35.queue [] rudder.5e03f600-6e8a-4c9e-867b-ef9cdcfebd35.reclaimEnd null rudder.5e03f600-6e8a-4c9e-867b-ef9cdcfebd35.reclaimStart null
+
+
+The server worker:
+
+var CACHE_NAME = "imgflip-v0"
+
+ , CACHE_MAX_ENTRIES = 500
+ , FILES_TO_PRECACHE = ["/imgflip_white_96.png", "/imgflip-icon-transparent-192.svg", "/offline", "/imgflip-icon-padded-192.svg"];
+self.addEventListener("install", function(a) {
+
+   self.skipWaiting && self.skipWaiting();
+   a.waitUntil(caches.open(CACHE_NAME).then(function(b) {
+       return b.addAll(FILES_TO_PRECACHE)
+   }))
+}); self.addEventListener("activate", function(a) {
+
+   var b = [CACHE_NAME];
+   a.waitUntil(caches.keys().then(function(c) {
+       return Promise.all(c.map(function(d) {
+           if (-1 === b.indexOf(d))
+               return caches["delete"](d)
+       }))
+   }))
+}); self.addEventListener("fetch", function(a) {
+
+   if ("POST" !== a.request.method && a.request.url.match(/^https:\/\/([a-z]+\.)?imgflip\.com(\/|$)/)) {
+       if ("function" === typeof URL) {
+           var b = new URL(a.request.url);
+           if (b.pathname && -1 !== FILES_TO_PRECACHE.indexOf(b.pathname) && "." === b.pathname.substr(-4, 1)) {
+               a.respondWith(caches.match(a.request).then(function(c) {
+                   return c ? c : fetchAndCache(a.request)
+               }));
+               return
+           }
+       }
+       a.request.url.match(/\.(js|css|png|gif|jpg|ico|svg|mp4|webm)/) || a.respondWith(fetchAndCache(a.request)["catch"](function() {
+           return caches.match(a.request).then(function(c) {
+               if (c)
+                   return c;
+               if ("navigate" === a.request.mode)
+                   return caches.open(CACHE_NAME).then(function(d) {
+                       return d.match("offline")
+                   })
+           })
+       }))
+   }
+}); function fetchAndCache(a) {
+
+   return fetch(a).then(function(b) {
+       if (!b || 200 !== b.status || "basic" !== b.type)
+           return b;
+       var c = b.clone();
+       caches.open(CACHE_NAME).then(function(d) {
+           d.put(a, c)
+       });
+       return b
+   })
+} self.addEventListener("message", function(a) {
+
+   "cache_clear_old_entries" === a.data && caches.open(CACHE_NAME).then(function(b) {
+       b.keys().then(function(c) {
+           var d = c.length - CACHE_MAX_ENTRIES;
+           if (!(1 > d))
+               for (var e = 0; e < d; e++) {
+                   var f = new URL(c[e].url);
+                   -1 === FILES_TO_PRECACHE.indexOf(f.pathname) && b["delete"](c[e])
+               }
+       })
+   })
+}); self.addEventListener("notificationclick", function(a) {
+
+   "memechat" === a.notification.tag && a.waitUntil(clients.matchAll({
+       includeUncontrolled: !0
+   }).then(function(b) {
+       for (var c = 0; c < b.length; c++) {
+           var d = b[c];
+           if ("/memechat" === (new URL(d.url)).pathname.substr(0, 9) && "focus"in d)
+               return d.focus()
+       }
+       if (clients.openWindow)
+           return clients.openWindow("/memechat")
+   }))
+});
+
+
+
+Pro.js:
+
+(function() {
+
+   function m(a, b) {
+       return "api_premium" === a ? b ? 9900 : 999 : "pro_basic" === a ? b ? 4740 : 495 : b ? 11940 : 1295
+   }
+   function r(a, b) {
+       return "Imgflip " + h[a] + " " + (b ? "Yearly" : "Monthly") + " Subscription"
+   }
+   function n(a, b, e, g) {
+       I.user.id ? (loading("Upgrading to " + h[a]),
+       $.ajax({
+           url: "/ajax_pro_signup",
+           type: "post",
+           dataType: "json",
+           data: {
+               type: a,
+               yearly: b ? 1 : 0,
+               token: e.id,
+               email: e.email
+           },
+           success: function(c) {
+               loading(!1);
+               if (c.error)
+                   error_dialog(c.error);
+               else {
+                   I.user.pro_type = a;
+                   BOX.hide();
+                   k(a, "Stripe Success " + g);
+c = '
+Congratulations, ' + (esc(I.user.user) + "!
+
+"); "pro" === a ? c += "
+You've upgraded to Imgflip Pro! Enjoy your ad-free and watermark-free GIF & meme making!
+
+" : "pro_basic" === a ? c += "
+You've upgraded to Imgflip Pro Basic! Enjoy your ad-free and watermark-free meme generating!
+
+" : "api_premium" === a && (c += "
+You've upgraded to Imgflip API Premium! Enjoy your new API tools!
+
+"); c += "
+Feel free to contact us at general@imgflip.com if you have any questions or comments.
+
+";
+                   var f = location.pathname;
+                   "/pro" === f && (c += '<a href="/gif-maker" class="b but">GIF Maker</a>');
+                   if ("/pro" === f || "/pro-basic" === f)
+                       c += '<a href="/memegenerator" class="b but">Meme Generator</a>';
+                   BOX.show({
+html: c + "
+",
+                       w: 400
+                   })
+               }
+           }
+       })) : showLogin("Your payment was accepted! Login or Signup below to choose which Imgflip account will be upgraded. While logged into this account, you will be able to manage your subscription and access all " + h[a] + " features.", {
+           hideX: !0,
+           noMaskClick: !0
+       }, function() {
+           n(a, b, e, g)
+       })
+   }
+   function t(a) {
+       loading("Changing Payment Method");
+       $.ajax({
+           url: "/ajax_pro_change_payment_method",
+           type: "post",
+           dataType: "json",
+           data: {
+               token: a.id
+           },
+           success: function(b) {
+               loading(!1);
+               b.error ? error_dialog(b.error) : (BOX.hide(),
+               MSG("Changed Payment Method Successfully!", "green"))
+           }
+       })
+   }
+   function p() {
+       return " (" + (I.user.id ? "" : "not ") + "logged in)"
+   }
+   var h = {
+       pro: "Pro",
+       pro_basic: "Pro Basic",
+       api_premium: "API Premium"
+   };
+   window.initProStripe = function(a, b, e, g) {
+       var c = !g
+         , f = StripeCheckout.configure({
+           key: "pk_live_6xZzt17AN4OiP5SW30T264Dy",
+           image: "https://imgflip.com/favicon-pad-256.png?a",
+           locale: "auto",
+           token: function(d) {
+               e ? t(d) : (k(b, "Stripe Pay Success Card" + p()),
+               n(b, c, d, "Card"))
+           }
+       });
+       $w.on("popstate", function() {
+           f.close()
+       });
+       var u = Stripe("pk_live_6xZzt17AN4OiP5SW30T264Dy"), x = u.elements({
+           locale: "auto"
+       }), l = u.paymentRequest({
+           country: "US",
+           currency: "usd",
+           total: {
+               amount: e ? 0 : m(b, c),
+               label: r(b, c)
+           },
+           requestPayerName: !0,
+           requestPayerEmail: !0
+       }), q;
+       l.on("token", function(d) {
+           d.complete("success");
+           e ? t(d.token) : (k(b, "Stripe Pay Success PaymentRequest " + q + p()),
+           n(b, c, d.token, "PaymentRequest " + q))
+       });
+       var y = x.create("paymentRequestButton", {
+           paymentRequest: l,
+           style: {
+               paymentRequestButton: {
+                   height: "32px"
+               }
+           }
+       })
+         , v = a.find(".pro-stripe-payment-btn");
+       l.canMakePayment().then(function(d) {
+           d && (v.removeClass("display-none"),
+           y.mount(v[0]),
+           q = JSON.stringify(d))
+       });
+       a.on("click", ".pro-stripe-btn", function() {
+           e || k(b, "Stripe Clicked Buy" + p());
+           f.open({
+               name: "Imgflip " + h[b],
+               description: (c ? "Yearly" : "Monthly") + " Subscription",
+               amount: e ? 0 : m(b, c),
+               panelLabel: e ? "Update" : void 0,
+               email: I.user.email
+           })
+       });
+       a.on("click", ".pro-show-details", function() {
+           var d = a.find(".pro-details")
+             , w = d.hasClass("display-none");
+           $(this).text((w ? "Hide" : "Show") + " Details");
+           d.toggleClass("display-none", !w)
+       });
+       a.on("change", ".pro-bill-yearly", function() {
+           c = $(this).hasClass("checked");
+           a.find(".pro-price-monthly").toggleClass("display-none", c);
+           a.find(".pro-price-yearly").toggleClass("display-none", !c);
+           l.update({
+               total: {
+                   amount: m(b, c),
+                   label: r(b, c)
+               }
+           })
+       });
+       g && a.find(".pro-bill-yearly").removeClass("checked").change()
+   }
+   ;
+   var k = window.proEvent = function(a, b) {
+       $.ajax({
+           url: "/ajax_pro_action",
+           type: "post",
+           dataType: "json",
+           data: {
+               pro_type: a,
+               uid: I.user.id,
+               action: b,
+               pathname: location.pathname
+           }
+       })
+   }
+   ;
+   window.initProPaypal = function() {
+       var a = !1;
+       $(".pro-paypal-form").submit(function() {
+           if (a)
+               return !0;
+           if (!I.done)
+               return !1;
+           if (!I.user.id)
+               return window.location = "/signup?redirect=/pro",
+               !1;
+           a = !0;
+           $(this).submit();
+           return !1
+       })
+   }
+} )();
